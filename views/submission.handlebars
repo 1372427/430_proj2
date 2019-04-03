@@ -11,18 +11,16 @@
   <link rel="shortcut icon" href="/assets/img/favicon.png"/>
   <link rel="stylesheet" type="text/css" href="/assets/style.css"/>
 </head>
-<body>
-  <nav><a href="/login"><img id="logo" src="/assets/img/face.png" alt="face logo"/></a>
-    <div class="navlink"><a href="/accountInfo">Account</a></div>
-    <div class="navlink"><a href="/logout">Logout</a></div>
+<body> 
+  <nav><a href="/login"><img id="logo" src="/assets/img/face2.png" alt="face logo"/></a>
+    <div class="navlink"><a id="loginButton" href="/maker">Home</a></div>
+    <div class="navlink"><a id="loginButton" href="/accountIfo">Account</a></div>
+    <div class="navlink"><a id="signupButton" href="/logout">Logout</a></div>
   </nav>
-  <section id="makeDomo">
-  </section>
-  <section id="domos">
-  </section>
+  <section id="content"></section>
   <div id="domoMessage"><img id="speech" src="/assets/img/speech.png" alt="speech box"/>
-    <h3><span id="errorMessage"></span></h3><img id="domo" src="assets/img/cat.png" alt="chibi"/>
+    <h3><span id="errorMessage">All fields must be filled</span></h3><img id="domo" src="assets/img/cat.png" alt="chibi"/>
   </div>
-  <script src="/assets/bundle.js"></script>
+  <script src="/assets/loginBundle.js"></script>
 </body>
 </html>
