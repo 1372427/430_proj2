@@ -6,6 +6,10 @@ const loginPage = (req, res) => {
   res.render('login', { csrfToken: req.csrfToken() });
 };
 
+const accountPage = (req, res) => {
+  res.render('accountinfo', { csrfToken: req.csrfToken() });
+};
+
 
 const logout = (req, res) => {
   req.session.destroy();
@@ -95,3 +99,4 @@ module.exports.login = login;
 module.exports.logout = logout;
 module.exports.signup = signup;
 module.exports.getToken = getToken;
+module.exports.accountPage = accountPage;

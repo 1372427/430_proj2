@@ -38,6 +38,6 @@ gulp.task('watch', () => {
         script: './server/app.js',
         ext: 'js',
         ignore: ['./hosted/*.js', './client/*.js'],
-        tasks: ['lint']
+        tasks: []
     });
 });
