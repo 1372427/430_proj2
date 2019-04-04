@@ -10,17 +10,20 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js"></script>
   <link rel="shortcut icon" href="/assets/img/favicon.png"/>
   <link rel="stylesheet" type="text/css" href="/assets/style.css"/>
+    <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
+    <link href="https://cdn.syncfusion.com/ej2/material.css" rel="stylesheet">
 </head>
 <body> 
   <nav><a href="/login"><img id="logo" src="/assets/img/face2.png" alt="face logo"/></a>
-    <div class="navlink"><a id="loginButton" href="/maker">Home</a></div>
-    <div class="navlink"><a id="loginButton" href="/accountIfo">Account</a></div>
-    <div class="navlink"><a id="signupButton" href="/logout">Logout</a></div>
+    <div class="navlink"><a id="accountButton" >Account</a></div>
+    <div class="navlink"><a id="homeButton" href="/home">Home</a></div>
+    <div class="navlink"><a id="contestButton" href="/makeContest">Create Contest</a></div>
+    <div class="navlink"><a href="/logout">Logout</a></div>
   </nav>
   <section id="content"></section>
   <div id="domoMessage"><img id="speech" src="/assets/img/speech.png" alt="speech box"/>
     <h3><span id="errorMessage">All fields must be filled</span></h3><img id="domo" src="assets/img/cat.png" alt="chibi"/>
   </div>
-  <script src="/assets/loginBundle.js"></script>
+  <script src="/assets/makerBundle.js"></script>
 </body>
 </html>

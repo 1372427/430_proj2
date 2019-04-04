@@ -3,14 +3,15 @@ const handleCompetition = (e) => {
 
     $("#domoMessage").animate({width:'hide'}, 350);
 
-    if($("#user").val() == '' || $("#pass").val() == ''){
-        handleError("RAWR! Username or password is empty");
+    if($("#name").val() == '' || $("#descrip").val() == ''){
+        handleError("Meow! Fill all fields please!");
         return false;
     }
-
-    console.log($("input[name=_csrf]").val());
-    
-    sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect);
+    let deadline = $("#deadline").val();
+    deadline = deadline.split('/');
+    deadline = new Date(deadline[2], deadline[0], deadline[1]);
+    //querySelector("#deadline").value =  deadline;
+    sendAjax('POST', $("#competitionForm").attr("action"), $("#competitionForm").serialize(), redirect);
 
     return false;
 };
@@ -37,10 +38,22 @@ const handleEntry = (e) => {
 };
 
 const CompetitionWindow = (props) => {
+    if(props.type==="Basic"){
+        return (
+            <div>
+                You currently have a Basic account. Please upgrade to Premium to create contests.
+            </div>
+        )
+    }
+    let dateObj = new Date(Date.now());
+    let date = dateObj.getDate();
+    let month = dateObj.getMonth();
+    let year = dateObj.getFullYear();
+    let csrf = props.csrf;
     return (
         <form id="competitionForm" name="competitionForm"
             onSubmit={handleCompetition}
-            action="/competition"
+            action="/makeContest"
             method="POST"
             className="mainForm"
         >
@@ -49,10 +62,10 @@ const CompetitionWindow = (props) => {
         <label htmlFor="descrip">Description: </label>
         <input id="descrip" type="text" name="descrip" placeholder="description"/>
         <label htmlFor="reward">Reward: $</label>
-        <input id="reward" type="text" name="reward" placeholder="0"/>
+        <input id="reward" type="text" name="reward" placeholder="10.00"/>
         <label htmlFor="deadline">Deadline: </label>
-        <input id="deadline" type="text" name="deadline" placeholder={Date.now}/>
-        <input type="hidden" name="_csrf" value={props.csrf}/>
+        <input id="deadline" type="text" name="deadline" placeholder={`${year}/${month}/${date}`}/>
+        <input type="hidden" name="_csrf" value={csrf}/>
         <input className="formSubmit" type="submit" value="Submit" />
         </form>
     );
@@ -77,10 +90,14 @@ const EntryWindow = (props) => {
 };
 
 const createCompetitionWindow = (csrf) => {
-    ReactDOM.render(
-        <CompetitionWindow csrf={csrf} />,
-        document.querySelector("#content")
-    );
+    sendAjax('GET', '/accountInfo', null, (data) => {
+        console.log(data)
+        let type = data.account.type;
+        ReactDOM.render(
+            <CompetitionWindow csrf={csrf} type={type}/>,
+            document.querySelector("#content")
+        );
+    });
 };
 
 const createEntryWindow = (csrf, contest) => {
@@ -91,22 +108,8 @@ const createEntryWindow = (csrf, contest) => {
 };
 
 const setup = (csrf) => {
-    const loginButton = document.querySelector("#loginButton");
-    const signupButton = document.querySelector("#signupButton");
-
-    signupButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        createSignupWindow(csrf);
-        return false;
-    });
-
-    loginButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        createLoginWindow(csrf);
-        return false;
-    });
-
-    createLoginWindow(csrf);//default view
+    console.log('submission')
+    createCompetitionWindow(csrf);
 };
 
 const getToken = () => {

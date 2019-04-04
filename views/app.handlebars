@@ -13,16 +13,18 @@
 </head>
 <body>
   <nav><a href="/login"><img id="logo" src="/assets/img/face2.png" alt="face logo"/></a>
-    <div class="navlink"><a href="/accountInfo">Account</a></div>
+    <div class="navlink"><a id="accountButton" >Account</a></div>
+    <div class="navlink"><a id="homeButton" href="/home">Home</a></div>
+    <div class="navlink"><a id="contestButton" href="/makeContest">Create Contest</a></div>
     <div class="navlink"><a href="/logout">Logout</a></div>
   </nav>
   <section id="makeDomo">
   </section>
-  <section id="domos">
+  <section id="app">
   </section>
   <div id="domoMessage"><img id="speech" src="/assets/img/speech.png" alt="speech box"/>
     <h3><span id="errorMessage"></span></h3><img id="domo" src="assets/img/cat.png" alt="chibi"/>
   </div>
-  <script src="/assets/bundle.js"></script>
+  <script src="/assets/homeBundle.js"></script>
 </body>
 </html>

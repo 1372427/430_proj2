@@ -1,9 +1,10 @@
 const models = require('../models');
 
 const Entry = models.Entry;
+const Contest = models.Competition;
 
 const makeEntryPage = (req, res) => {
-  Entry.EntryModel.findByOwner(req.session.account._id, (err, docs) => {
+  Contest.ContestModel.findByDeadline(Date.now(), (err, docs) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occured' });
@@ -27,7 +28,7 @@ const makeEntry = (req, res) => {
 
   const entryPromise = newEntry.save();
 
-  entryPromise.then(() => res.json({ redirect: '/maker' }));
+  entryPromise.then(() => res.json({ redirect: '/home' }));
 
   entryPromise.catch((err) => {
     console.log(err);
@@ -70,7 +71,7 @@ const getEntriesByContest = (request, response) => {
 };
 
 
-module.exports.entryPage = makeEntryPage;
+module.exports.makePage = makeEntryPage;
 module.exports.make = makeEntry;
 module.exports.getEntriesByOwner = getEntriesByOwner;
 module.exports.getEntriesByContest = getEntriesByContest;

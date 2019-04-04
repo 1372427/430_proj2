@@ -8,16 +8,16 @@ const redirect = (response) => {
     window.location = response.redirect;
 };
 
-const sendAjax = (type, action, data, success) => {
+const sendAjax = (type, action, data, success, dataType) => {
     $.ajax({
         cache: false, 
         type: type,
         url: action,
         data: data,
-        dataType: "json",
+        dataType: (dataType? dataType : "json"),
         success: success,
         error: function(xhr, status, error) {
-            var messageObj = JSON.parse(chr.responseText);
+            var messageObj = JSON.parse(xhr.responseText);
             handleError(messageObj.error);
         }
     });

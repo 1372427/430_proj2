@@ -60,7 +60,9 @@ CompetitionSchema.statics.findByOwner = (ownerId, callback) => {
 
 CompetitionSchema.statics.findByDeadline = (date, callback) => {
   const search = {
-    deadline: date,
+    deadline: {
+      $gte: date,
+    }
   };
 
   return CompetitionModel.find(search).select('name owner description reward deadline createdDate').exec(callback);

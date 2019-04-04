@@ -22,13 +22,18 @@ var handleSignup = function handleSignup(e) {
 
     $("#domoMessage").animate({ width: 'hide' }, 350);
 
-    if ($("#user").val() === '' || $("#pass").val() === '' || $("#pass2").val() === '') {
-        handleError("RAWR! All fields are required");
+    if ($("#user").val() === '' || $("#pass").val() === '' || $("#pass2").val() === '' || $("#email").val() === '') {
+        handleError("Meow! All fields are required");
         return false;
     }
 
     if ($("#pass").val() !== $("#pass2").val()) {
-        handleError("RAWR! Passwords do not match");
+        handleError("Meow! Passwords do not match");
+        return false;
+    }
+
+    if ($("#email").val().split('@').length !== 2 || $("#email").val().split('@')[1].split('.') < 2) {
+        handleError("Meow! Invalid email");
         return false;
     }
 
@@ -79,6 +84,12 @@ var SignupWindow = function SignupWindow(props) {
             "Username: "
         ),
         React.createElement("input", { id: "user", type: "text", name: "username", placeholder: "username" }),
+        React.createElement(
+            "label",
+            { htmlFor: "email" },
+            "Email: "
+        ),
+        React.createElement("input", { id: "email", type: "text", name: "email", placeholder: "email" }),
         React.createElement(
             "label",
             { htmlFor: "pass" },
@@ -154,7 +165,7 @@ var sendAjax = function sendAjax(type, action, data, success) {
         dataType: "json",
         success: success,
         error: function error(xhr, status, _error) {
-            var messageObj = JSON.parse(chr.responseText);
+            var messageObj = JSON.parse(xhr.responseText);
             handleError(messageObj.error);
         }
     });

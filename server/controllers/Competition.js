@@ -3,31 +3,34 @@ const models = require('../models');
 const Contest = models.Competition;
 
 const makeContestPage = (req, res) => {
-  Contest.ContestModel.findByOwner(req.session.account._id, (err, docs) => {
+  Contest.ContestModel.findById(req.session.account._id, (err, docs) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occured' });
     }
-    return res.render('app', { csrfToken: req.csrfToken(), entries: docs });
+    return res.render('submission', { csrfToken: req.csrfToken(), entries: docs });
   });
 };
 
 const makeContest = (req, res) => {
-  if (!req.body.content  ) {
+  console.log("contest")
+  if (!req.body.descrip || !req.body.name || !req.body.reward || !req.body.deadline ) {
     return res.status(400).json({ error: 'Meow! Fill out all fields Pwease~' });
   }
 
   const contestData = {
-    content: req.body.content,
-    contest: req.body.contest,
+    name: req.body.name,
     owner: req.session.account._id,
+    description: req.body.descrip,
+    reward: req.body.reward,
+    deadline: req.body.deadline,
   };
-
+console.log(contestData)
   const newContest = new Contest.ContestModel(contestData);
 
   const contestPromise = newContest.save();
 
-  contestPromise.then(() => res.json({ redirect: '/maker' }));
+  contestPromise.then(() => res.json({ redirect: '/home' }));
 
   contestPromise.catch((err) => {
     console.log(err);
@@ -55,8 +58,22 @@ const getContestsByOwner = (request, response) => {
   });
 };
 
+const getContestsByDate = (request, response) => {
+  const req = request;
+  const res = response;
+
+  return Contest.ContestModel.findByDeadline(Date.now(), (err, docs) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occurred' });
+    }
+
+    return res.json({ contests: docs });
+  });
+};
 
 
-module.exports.contestPage = makeContestPage;
+module.exports.makePage = makeContestPage;
 module.exports.make = makeContest;
 module.exports.getContestsByOwner = getContestsByOwner;
+module.exports.getContestsByDate = getContestsByDate;

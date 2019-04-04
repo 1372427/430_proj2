@@ -7,9 +7,54 @@ const loginPage = (req, res) => {
 };
 
 const accountPage = (req, res) => {
-  res.render('accountinfo', { csrfToken: req.csrfToken() });
+  Account.AccountModel.findByUsername(req.session.account.username, (err, docs) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occured' });
+    }
+    let accountInfo = {
+      username: docs.username,
+      email: docs.email,
+      type: docs.type,
+    }
+
+
+
+    return res.json({ account: accountInfo });
+  });
 };
 
+const upgrade = (req, res) => {
+  Account.AccountModel.findByUsername(req.session.account.username, (err, docs) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occured' });
+    }
+    let accountInfo = {
+      username: docs.username,
+      email: docs.email,
+      type: docs.type,
+    }
+
+    
+  const upgradePromise = Account.AccountModel.updateOne({ username: accountInfo.username }, { type:"Premium" });
+
+  upgradePromise.then(() => res.json({ redirect: '/accountInfo' }));
+
+  upgradePromise.catch((err) => {
+    console.log(err);
+    if (err.code === 11000) {
+      return res.status(400).json({ error: 'Account already exists.' });
+    }
+
+    return res.status(400).json({ error: 'An error occurred' });
+  });
+
+  return upgradePromise;
+
+
+  });
+};
 
 const logout = (req, res) => {
   req.session.destroy();
@@ -35,7 +80,7 @@ const login = (request, response) => {
 
     req.session.account = Account.AccountModel.toAPI(account);
 
-    return res.json({ redirect: '/maker' });
+    return res.json({ redirect: '/home' });
   });
 };
 
@@ -47,13 +92,14 @@ const signup = (request, response) => {
   req.body.username = `${req.body.username}`;
   req.body.pass = `${req.body.pass}`;
   req.body.pass2 = `${req.body.pass2}`;
+  req.body.email = `${req.body.email}`;
 
-  if (!req.body.username || !req.body.pass || !req.body.pass2) {
-    return res.status(400).json({ error: 'RAWR! All fields are required' });
+  if (!req.body.username || !req.body.pass || !req.body.pass2 || !req.body.email) {
+    return res.status(400).json({ error: 'Meow! All fields are required' });
   }
 
   if (req.body.pass !== req.body.pass2) {
-    return res.status(400).json({ error: 'RAWR! Passwords do not match' });
+    return res.status(400).json({ error: 'Meow! Passwords do not match' });
   }
 
   return Account.AccountModel.generateHash(req.body.pass, (salt, hash) => {
@@ -61,6 +107,8 @@ const signup = (request, response) => {
       username: req.body.username,
       salt,
       password: hash,
+      email: req.body.email,
+      type: "Basic"
     };
 
     const newAccount = new Account.AccountModel(accountData);
@@ -69,7 +117,7 @@ const signup = (request, response) => {
 
     savePromise.then(() => {
       req.session.account = Account.AccountModel.toAPI(newAccount);
-      return res.json({ redirect: '/maker' });
+      return res.json({ redirect: '/home' });
     });
 
     savePromise.catch((err) => {
@@ -97,6 +145,7 @@ const getToken = (request, response) => {
 module.exports.loginPage = loginPage;
 module.exports.login = login;
 module.exports.logout = logout;
+module.exports.upgrade = upgrade;
 module.exports.signup = signup;
 module.exports.getToken = getToken;
 module.exports.accountPage = accountPage;

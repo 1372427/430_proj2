@@ -1,16 +1,16 @@
 {
-  "name": "DomoB",
+  "name": "ContestMaker",
   "version": "1.0.0",
   "engines": {
     "node": "7.5.0",
     "npm": "4.0.5"
   },
-  "description": "A Simple Login Example using Node.js, Mongo and Redis",
+  "description": "A Simple Contest Maker Tool using Node.js, Mongo and Redis",
   "main": "./server/app.js",
   "scripts": {
     "buildLoginBundle": "babel ./client/login ./client/helper --presets react --out-file ./hosted/loginBundle.js",
     "buildAppBundle": "babel ./client/app ./client/helper --presets react --out-file ./hosted/bundle.js",
-    "build": "gulp build", 
+    "build": "gulp build",
     "buildSass": "gulp sass",
     "watch": "gulp watch",
     "watchLoginBundle": "babel --watch ./client/login ./client/helper --presets react --out-file ./hosted/loginBundle.js",
@@ -51,6 +51,7 @@
     "eslint-plugin-import": "^1.10.1",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
+    "gulp-concat": "^2.6.1",
     "gulp-eslint": "^3.0.1",
     "gulp-nodemon": "^2.2.1",
     "gulp-sass": "^3.1.0",

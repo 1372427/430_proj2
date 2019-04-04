@@ -43,7 +43,7 @@ var DomoForm = function DomoForm(props) {
     );
 };
 
-var DomoList = function DomoList(props) {
+var ContestList = function ContestList(props) {
     if (props.domos.length === 0) {
         return React.createElement(
             "div",
@@ -51,7 +51,7 @@ var DomoList = function DomoList(props) {
             React.createElement(
                 "h3",
                 { className: "emptyDomo" },
-                "No Domos yet"
+                "No Contests yet"
             )
         );
     }
@@ -83,13 +83,14 @@ var DomoList = function DomoList(props) {
     );
 };
 
-var loadDomosFromServer = function loadDomosFromServer() {
-    sendAjax('GET', '/getDomos', null, function (data) {
-        ReactDOM.render(React.createElement(DomoList, { domos: data.domos }), document.querySelector("#domos"));
+var loadCompetitionsFromServer = function loadCompetitionsFromServer() {
+    sendAjax('GET', '/getContests', null, function (data) {
+        ReactDOM.render(React.createElement(ContestList, { contests: data.contests }), document.querySelector("#domos"));
     });
 };
 
 var setup = function setup(csrf) {
+    console.log('maker');
     ReactDOM.render(React.createElement(DomoForm, { csrf: csrf }), document.querySelector("#makeDomo"));
 
     ReactDOM.render(React.createElement(DomoList, { domos: [] }), document.querySelector("#domos"));
@@ -99,6 +100,127 @@ var setup = function setup(csrf) {
 
 var getToken = function getToken() {
     sendAjax('GET', '/getToken', null, function (result) {
+        setup(result.csrfToken);
+    });
+};
+
+$(document).ready(function () {
+    getToken();
+});
+"use strict";
+
+var handleCompetition = function handleCompetition(e) {
+    e.preventDefault();
+
+    $("#domoMessage").animate({ width: 'hide' }, 350);
+
+    if ($("#user").val() == '' || $("#pass").val() == '') {
+        handleError("RAWR! Username or password is empty");
+        return false;
+    }
+
+    console.log($("input[name=_csrf]").val());
+
+    sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect);
+
+    return false;
+};
+
+var handleEntry = function handleEntry(e) {
+    e.preventDefault();
+
+    $("#domoMessage").animate({ width: 'hide' }, 350);
+
+    if ($("#user").val() === '' || $("#pass").val() === '' || $("#pass2").val() === '') {
+        handleError("RAWR! All fields are required");
+        return false;
+    }
+
+    if ($("#pass").val() !== $("#pass2").val()) {
+        handleError("RAWR! Passwords do not match");
+        return false;
+    }
+
+    sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect);
+
+    return false;
+};
+
+var CompetitionWindow = function CompetitionWindow(props) {
+    return React.createElement(
+        "form",
+        { id: "competitionForm", name: "competitionForm",
+            onSubmit: handleCompetition,
+            action: "/competition",
+            method: "POST",
+            className: "mainForm"
+        },
+        React.createElement(
+            "label",
+            { htmlFor: "name" },
+            "Contest Name: "
+        ),
+        React.createElement("input", { id: "name", type: "text", name: "name", placeholder: "name" }),
+        React.createElement(
+            "label",
+            { htmlFor: "descrip" },
+            "Description: "
+        ),
+        React.createElement("input", { id: "descrip", type: "text", name: "descrip", placeholder: "description" }),
+        React.createElement(
+            "label",
+            { htmlFor: "reward" },
+            "Reward: $"
+        ),
+        React.createElement("input", { id: "reward", type: "text", name: "reward", placeholder: "0" }),
+        React.createElement(
+            "label",
+            { htmlFor: "deadline" },
+            "Deadline: "
+        ),
+        React.createElement("input", { id: "deadline", type: "text", name: "deadline", placeholder: Date.now }),
+        React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
+        React.createElement("input", { className: "formSubmit", type: "submit", value: "Submit" })
+    );
+};
+
+var EntryWindow = function EntryWindow(props) {
+    return React.createElement(
+        "form",
+        { id: "entryForm",
+            name: "entryForm",
+            onSubmit: handleEntry,
+            action: "/entry",
+            method: "POST",
+            className: "mainForm"
+        },
+        React.createElement(
+            "label",
+            { htmlFor: "content" },
+            "Content: "
+        ),
+        React.createElement("input", { id: "content", type: "text", name: "content", placeholder: "entry" }),
+        React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
+        React.createElement("input", { type: "hidden", name: "contest", value: props.contest }),
+        React.createElement("input", { className: "formSubmit", type: "submit", value: "Submit" })
+    );
+};
+
+var createCompetitionWindow = function createCompetitionWindow(csrf) {
+    ReactDOM.render(React.createElement(CompetitionWindow, { csrf: csrf }), document.querySelector("#content"));
+};
+
+var createEntryWindow = function createEntryWindow(csrf, contest) {
+    ReactDOM.render(React.createElement(EntryWindow, { csrf: csrf, contest: contest }), document.querySelector("#content"));
+};
+
+var setup = function setup(csrf) {
+    console.log('submission');
+};
+
+var getToken = function getToken() {
+    sendAjax('GET', '/getToken', null, function (result) {
+        console.log('test');
         setup(result.csrfToken);
     });
 };
