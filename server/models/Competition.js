@@ -55,17 +55,19 @@ CompetitionSchema.statics.findByOwner = (ownerId, callback) => {
     owner: convertId(ownerId),
   };
 
-  return CompetitionModel.find(search).select('name owner description reward deadline createdDate').exec(callback);
+  return CompetitionModel.find(search).select(
+    'name owner description reward deadline createdDate').exec(callback);
 };
 
 CompetitionSchema.statics.findByDeadline = (date, callback) => {
   const search = {
     deadline: {
       $gte: date,
-    }
+    },
   };
 
-  return CompetitionModel.find(search).select('name owner description reward deadline createdDate').exec(callback);
+  return CompetitionModel.find(search).select(
+    'name owner description reward deadline createdDate').exec(callback);
 };
 
 CompetitionModel = mongoose.model('Contest', CompetitionSchema);

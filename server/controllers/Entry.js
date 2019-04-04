@@ -14,7 +14,7 @@ const makeEntryPage = (req, res) => {
 };
 
 const makeEntry = (req, res) => {
-  if (!req.body.content  ) {
+  if (!req.body.content) {
     return res.status(400).json({ error: 'Meow! Fill out entry Pwease~' });
   }
 

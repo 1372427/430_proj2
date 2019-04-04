@@ -13,8 +13,8 @@ const makeContestPage = (req, res) => {
 };
 
 const makeContest = (req, res) => {
-  console.log("contest")
-  if (!req.body.descrip || !req.body.name || !req.body.reward || !req.body.deadline ) {
+  console.log('contest');
+  if (!req.body.descrip || !req.body.name || !req.body.reward || !req.body.deadline) {
     return res.status(400).json({ error: 'Meow! Fill out all fields Pwease~' });
   }
 
@@ -25,7 +25,7 @@ const makeContest = (req, res) => {
     reward: req.body.reward,
     deadline: req.body.deadline,
   };
-console.log(contestData)
+  console.log(contestData);
   const newContest = new Contest.ContestModel(contestData);
 
   const contestPromise = newContest.save();
@@ -59,7 +59,6 @@ const getContestsByOwner = (request, response) => {
 };
 
 const getContestsByDate = (request, response) => {
-  const req = request;
   const res = response;
 
   return Contest.ContestModel.findByDeadline(Date.now(), (err, docs) => {

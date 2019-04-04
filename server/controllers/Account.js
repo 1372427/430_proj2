@@ -12,12 +12,11 @@ const accountPage = (req, res) => {
       console.log(err);
       return res.status(400).json({ error: 'An error occured' });
     }
-    let accountInfo = {
+    const accountInfo = {
       username: docs.username,
       email: docs.email,
       type: docs.type,
-    }
-
+    };
 
 
     return res.json({ account: accountInfo });
@@ -30,29 +29,28 @@ const upgrade = (req, res) => {
       console.log(err);
       return res.status(400).json({ error: 'An error occured' });
     }
-    let accountInfo = {
+    const accountInfo = {
       username: docs.username,
       email: docs.email,
       type: docs.type,
-    }
-
-    
-  const upgradePromise = Account.AccountModel.updateOne({ username: accountInfo.username }, { type:"Premium" });
-
-  upgradePromise.then(() => res.json({ redirect: '/accountInfo' }));
-
-  upgradePromise.catch((err) => {
-    console.log(err);
-    if (err.code === 11000) {
-      return res.status(400).json({ error: 'Account already exists.' });
-    }
-
-    return res.status(400).json({ error: 'An error occurred' });
-  });
-
-  return upgradePromise;
+    };
 
 
+    const upgradePromise = Account.AccountModel.updateOne(
+      { username: accountInfo.username }, { type: 'Premium' });
+
+    upgradePromise.then(() => res.json({ redirect: '/accountInfo' }));
+
+    upgradePromise.catch((err2) => {
+      console.log(err2);
+      if (err2.code === 11000) {
+        return res.status(400).json({ error: 'Account already exists.' });
+      }
+
+      return res.status(400).json({ error: 'An error occurred' });
+    });
+
+    return upgradePromise;
   });
 };
 
@@ -108,7 +106,7 @@ const signup = (request, response) => {
       salt,
       password: hash,
       email: req.body.email,
-      type: "Basic"
+      type: 'Basic',
     };
 
     const newAccount = new Account.AccountModel(accountData);
