@@ -3,7 +3,6 @@ const sass = require('gulp-sass');
 const babel = require('gulp-babel');
 const nodemon = require('gulp-nodemon');
 const eslint = require('gulp-eslint');
-const rename = require('gulp-rename');
 const concat = require('gulp-concat');
 
 gulp.task('sass', () => {
