@@ -1,6 +1,15 @@
 const models = require('../models');
+const nodemailer = require('nodemailer');
 
 const Account = models.Account;
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'contest430mvc@gmail.com',
+    pass: '3]jhT$tzWrV8&M?Y'
+  }
+});
 
 const loginPage = (req, res) => {
   res.render('login', { csrfToken: req.csrfToken() });
@@ -17,8 +26,6 @@ const accountPage = (req, res) => {
       email: docs.email,
       type: docs.type,
     };
-
-
     return res.json({ account: accountInfo });
   });
 };
@@ -115,6 +122,19 @@ const signup = (request, response) => {
 
     savePromise.then(() => {
       req.session.account = Account.AccountModel.toAPI(newAccount);
+
+      let mailOptions = {
+        from: 'contest430mvc@gmail.com',
+        to: accountData.email,
+        subject: 'Account Creation Confirmation',
+        html: `Thank you ${accountData.username}. You created an account with Contest.`
+      }
+  
+      transporter.sendMail(mailOptions, function(error, info){
+        if(error) console.log(error);
+        else console.log('email sent: ' + info.response);
+      })
+      
       return res.json({ redirect: '/home' });
     });
 

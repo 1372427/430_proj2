@@ -95,7 +95,7 @@ const createCompetitionWindow = (csrf) => {
         let type = data.account.type;
         ReactDOM.render(
             <CompetitionWindow csrf={csrf} type={type}/>,
-            document.querySelector("#content")
+            document.querySelector("#app")
         );
     });
 };
@@ -103,12 +103,70 @@ const createCompetitionWindow = (csrf) => {
 const createEntryWindow = (csrf, contest) => {
     ReactDOM.render(
         <EntryWindow csrf={csrf} contest={contest}/>,
-        document.querySelector("#content")
+        document.querySelector("#app")
     );
+};
+
+
+const handleUpgrade = (e) => {
+    e.preventDefault();
+
+    sendAjax('POST', $("#upgradeForm").attr("action"), $("#upgradeForm").serialize(), function() {
+        loadAccountFromServer();
+    });
+    return false;
+};
+
+const AccountInfo = function(props){
+    console.log(props)
+    let accountInfo = props.account;
+    let csrf = props.csrf;
+    let ad;
+    if(accountInfo.type==="Basic"){
+        ad = (<div>
+            <p>You currently have a Basic account. Upgrade to a Premium account for $5 and be able to host your own competitions!</p>
+            
+        <form id="upgradeForm"
+            onSubmit = {handleUpgrade}
+            name="upgradeForm"
+            action="/upgrade"
+            method="POST"
+            className="domoForm"
+        >
+        <input type="hidden" name="_csrf" value={csrf}/>
+        <input className="upgrade" type="submit" value="Upgrade Account" />
+        </form>
+        </div>);
+    }
+    return (
+        <div className="domoList">
+            <div className="domo">
+                <h3 >Username: {accountInfo.username}</h3>
+                <h3 >Email: {accountInfo.email}</h3>
+                <h3>Account Type: {accountInfo.type}</h3>
+             </div>
+             {ad}
+        </div>
+    );
+};
+const loadAccountFromServer = (csrf) => {
+    sendAjax('GET', '/accountInfo', null, (data) => {
+        ReactDOM.render(
+            <AccountInfo account={data.account} csrf={csrf}/>, document.querySelector("#app")
+        );
+    });
 };
 
 const setup = (csrf) => {
     console.log('submission')
+    const accountButton = document.querySelector("#accountButton");
+
+    accountButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        loadAccountFromServer(csrf);
+        return false;
+    });
+
     createCompetitionWindow(csrf);
 };
 

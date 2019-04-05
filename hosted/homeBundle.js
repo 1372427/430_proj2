@@ -44,8 +44,49 @@ var DomoForm = function DomoForm(props) {
     );
 };
 
+var handleEntry = function handleEntry(e) {
+    e.preventDefault();
+
+    $("#domoMessage").animate({ width: 'hide' }, 350);
+
+    if ($("#content").val() === '') {
+        handleError("RAWR! All fields are required");
+        return false;
+    }
+
+    sendAjax('POST', $("#entryForm").attr("action"), $("#entryForm").serialize(), redirect);
+
+    return false;
+};
+var EntryWindow = function EntryWindow(props) {
+    var csrf = props.csrf;
+    var contest = props.contest;
+    return React.createElement(
+        "form",
+        { id: "entryForm",
+            name: "entryForm",
+            onSubmit: handleEntry,
+            action: "/entry",
+            method: "POST",
+            className: "mainForm"
+        },
+        React.createElement(
+            "label",
+            { htmlFor: "content" },
+            "Content: "
+        ),
+        React.createElement("input", { id: "content", type: "text", name: "content", placeholder: "entry" }),
+        React.createElement("input", { type: "hidden", name: "_csrf", value: csrf }),
+        React.createElement("input", { type: "hidden", name: "contest", value: contest }),
+        React.createElement("input", { className: "formSubmit", type: "submit", value: "Submit" })
+    );
+};
+var createEntryWindow = function createEntryWindow(csrf, contest) {
+    ReactDOM.render(React.createElement(EntryWindow, { csrf: csrf, contest: contest }), document.querySelector("#app"));
+};
 var handleEnterContest = function handleEnterContest(id) {
-    sendAjax('GET', '/makeEntry', "id=" + id, function () {});
+    console.log(id);
+    createEntryWindow(csrf, id);
 };
 
 var ContestList = function ContestList(props) {

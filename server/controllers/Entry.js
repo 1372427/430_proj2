@@ -2,14 +2,29 @@ const models = require('../models');
 
 const Entry = models.Entry;
 const Contest = models.Competition;
+const Account = models.Account;
 
 const makeEntryPage = (req, res) => {
+  if(req.query.accountInfo){
+    Account.AccountModel.findByUsername(req.session.account.username, (err, docs) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({ error: 'An error occured' });
+      }
+      const accountInfo = {
+        username: docs.username,
+        email: docs.email,
+        type: docs.type,
+      };
+      return res.render('app', { csrfToken: req.csrfToken(), script: 'assets/makerBundle.js', account: accountInfo });;
+    });
+  }else 
   Contest.ContestModel.findByDeadline(Date.now(), (err, docs) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occured' });
     }
-    return res.render('app', { csrfToken: req.csrfToken(), entries: docs });
+    return res.render('app', { csrfToken: req.csrfToken(), script: 'assets/homeBundle.js', entries: docs });
   });
 };
 

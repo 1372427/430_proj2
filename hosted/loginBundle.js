@@ -156,13 +156,13 @@ var redirect = function redirect(response) {
     window.location = response.redirect;
 };
 
-var sendAjax = function sendAjax(type, action, data, success) {
+var sendAjax = function sendAjax(type, action, data, success, dataType) {
     $.ajax({
         cache: false,
         type: type,
         url: action,
         data: data,
-        dataType: "json",
+        dataType: dataType ? dataType : "json",
         success: success,
         error: function error(xhr, status, _error) {
             var messageObj = JSON.parse(xhr.responseText);

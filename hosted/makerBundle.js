@@ -1,5 +1,31 @@
 "use strict";
 
+var handleError = function handleError(message) {
+    $("#errorMessage").text(message);
+    $("#domoMessage").animate({ width: 'toggle' }, 350);
+};
+
+var redirect = function redirect(response) {
+    $("#domoMessage").animate({ width: 'hide' }, 350);
+    window.location = response.redirect;
+};
+
+var sendAjax = function sendAjax(type, action, data, success, dataType) {
+    $.ajax({
+        cache: false,
+        type: type,
+        url: action,
+        data: data,
+        dataType: dataType ? dataType : "json",
+        success: success,
+        error: function error(xhr, status, _error) {
+            var messageObj = JSON.parse(xhr.responseText);
+            handleError(messageObj.error);
+        }
+    });
+};
+"use strict";
+
 var handleCompetition = function handleCompetition(e) {
     e.preventDefault();
 
@@ -114,16 +140,95 @@ var createCompetitionWindow = function createCompetitionWindow(csrf) {
     sendAjax('GET', '/accountInfo', null, function (data) {
         console.log(data);
         var type = data.account.type;
-        ReactDOM.render(React.createElement(CompetitionWindow, { csrf: csrf, type: type }), document.querySelector("#content"));
+        ReactDOM.render(React.createElement(CompetitionWindow, { csrf: csrf, type: type }), document.querySelector("#app"));
     });
 };
 
 var createEntryWindow = function createEntryWindow(csrf, contest) {
-    ReactDOM.render(React.createElement(EntryWindow, { csrf: csrf, contest: contest }), document.querySelector("#content"));
+    ReactDOM.render(React.createElement(EntryWindow, { csrf: csrf, contest: contest }), document.querySelector("#app"));
+};
+
+var handleUpgrade = function handleUpgrade(e) {
+    e.preventDefault();
+
+    sendAjax('POST', $("#upgradeForm").attr("action"), $("#upgradeForm").serialize(), function () {
+        loadAccountFromServer();
+    });
+    return false;
+};
+
+var AccountInfo = function AccountInfo(props) {
+    console.log(props);
+    var accountInfo = props.account;
+    var csrf = props.csrf;
+    var ad = void 0;
+    if (accountInfo.type === "Basic") {
+        ad = React.createElement(
+            "div",
+            null,
+            React.createElement(
+                "p",
+                null,
+                "You currently have a Basic account. Upgrade to a Premium account for $5 and be able to host your own competitions!"
+            ),
+            React.createElement(
+                "form",
+                { id: "upgradeForm",
+                    onSubmit: handleUpgrade,
+                    name: "upgradeForm",
+                    action: "/upgrade",
+                    method: "POST",
+                    className: "domoForm"
+                },
+                React.createElement("input", { type: "hidden", name: "_csrf", value: csrf }),
+                React.createElement("input", { className: "upgrade", type: "submit", value: "Upgrade Account" })
+            )
+        );
+    }
+    return React.createElement(
+        "div",
+        { className: "domoList" },
+        React.createElement(
+            "div",
+            { className: "domo" },
+            React.createElement(
+                "h3",
+                null,
+                "Username: ",
+                accountInfo.username
+            ),
+            React.createElement(
+                "h3",
+                null,
+                "Email: ",
+                accountInfo.email
+            ),
+            React.createElement(
+                "h3",
+                null,
+                "Account Type: ",
+                accountInfo.type
+            )
+        ),
+        ad
+    );
+};
+var loadAccountFromServer = function loadAccountFromServer(csrf) {
+    sendAjax('GET', '/accountInfo', null, function (data) {
+        ReactDOM.render(React.createElement(AccountInfo, { account: data.account, csrf: csrf }), document.querySelector("#app"));
+    });
 };
 
 var setup = function setup(csrf) {
     console.log('submission');
+    var accountButton = document.querySelector("#accountButton");
+
+    accountButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        loadAccountFromServer(csrf);
+        return false;
+    });
+
     createCompetitionWindow(csrf);
 };
 
@@ -137,29 +242,3 @@ var getToken = function getToken() {
 $(document).ready(function () {
     getToken();
 });
-"use strict";
-
-var handleError = function handleError(message) {
-    $("#errorMessage").text(message);
-    $("#domoMessage").animate({ width: 'toggle' }, 350);
-};
-
-var redirect = function redirect(response) {
-    $("#domoMessage").animate({ width: 'hide' }, 350);
-    window.location = response.redirect;
-};
-
-var sendAjax = function sendAjax(type, action, data, success, dataType) {
-    $.ajax({
-        cache: false,
-        type: type,
-        url: action,
-        data: data,
-        dataType: dataType ? dataType : "json",
-        success: success,
-        error: function error(xhr, status, _error) {
-            var messageObj = JSON.parse(xhr.responseText);
-            handleError(messageObj.error);
-        }
-    });
-};
