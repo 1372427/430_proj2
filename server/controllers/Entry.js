@@ -5,7 +5,7 @@ const Contest = models.Competition;
 const Account = models.Account;
 
 const makeEntryPage = (req, res) => {
-  if(req.query.accountInfo){
+  if (req.query.accountInfo) {
     Account.AccountModel.findByUsername(req.session.account.username, (err, docs) => {
       if (err) {
         console.log(err);
@@ -16,16 +16,19 @@ const makeEntryPage = (req, res) => {
         email: docs.email,
         type: docs.type,
       };
-      return res.render('app', { csrfToken: req.csrfToken(), script: 'assets/makerBundle.js', account: accountInfo });;
+      return res.render('app', { csrfToken: req.csrfToken(), script:
+        'assets/makerBundle.js', account: accountInfo });
     });
-  }else 
-  Contest.ContestModel.findByDeadline(Date.now(), (err, docs) => {
-    if (err) {
-      console.log(err);
-      return res.status(400).json({ error: 'An error occured' });
-    }
-    return res.render('app', { csrfToken: req.csrfToken(), script: 'assets/homeBundle.js', entries: docs });
-  });
+  } else {
+    Contest.ContestModel.findByDeadline(Date.now(), (err, docs) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({ error: 'An error occured' });
+      }
+      return res.render('app', { csrfToken: req.csrfToken(), script:
+        'assets/homeBundle.js', entries: docs });
+    });
+  }
 };
 
 const makeEntry = (req, res) => {

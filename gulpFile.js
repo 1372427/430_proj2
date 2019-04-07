@@ -19,13 +19,6 @@ gulp.task('home', () => {
         .pipe(gulp.dest('./hosted/'));
 });
 
-gulp.task('maker', () => {
-    gulp.src(['./client/*/*.js', '!./client/app/home.js', '!./client/login/*.js'])
-        .pipe(babel({
-            presets: ['env', 'react']
-        })).pipe(concat('makerBundle.js'))
-        .pipe(gulp.dest('./hosted/'));
-});
 
 gulp.task('login', () => {
     gulp.src(['./client/*/*.js', '!./client/app/*.js'])
@@ -46,7 +39,6 @@ gulp.task('lint', () => {
 gulp.task('build', () => {
     gulp.start('sass');
     gulp.start('home');
-    gulp.start('maker');
     gulp.start('login');
     gulp.start('lint');
 });
@@ -54,7 +46,6 @@ gulp.task('build', () => {
 gulp.task('watch', () => {
     gulp.watch('./scss/style.scss', ['sass']);
     gulp.watch('./client/app/home.js', ['home']);
-    gulp.watch('./client/app/submission.js', [ 'maker']);
     gulp.watch('./client/login/*.js', [ 'login']);
     nodemon({
         script: './server/app.js',

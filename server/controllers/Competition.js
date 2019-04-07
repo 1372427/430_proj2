@@ -8,7 +8,8 @@ const makeContestPage = (req, res) => {
       console.log(err);
       return res.status(400).json({ error: 'An error occured' });
     }
-    return res.render('app', { csrfToken: req.csrfToken(), script: '/assets/makerBundle.js', entries:docs });
+    return res.render('app', { csrfToken: req.csrfToken(), script:
+      '/assets/makerBundle.js', entries: docs });
   });
 };
 
