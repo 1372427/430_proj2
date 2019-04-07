@@ -20,6 +20,11 @@ const EntrySchema = new mongoose.Schema({
     required: true,
   },
 
+  name: {
+    type: String,
+    required: true,
+  },
+
   contest: {
     type: mongoose.Schema.ObjectId,
     required: true,
@@ -42,15 +47,23 @@ EntrySchema.statics.findByOwner = (ownerId, callback) => {
     owner: convertId(ownerId),
   };
 
-  return EntryModel.find(search).select('owner content contest createdDate').exec(callback);
+  return EntryModel.find(search).select('owner content contest createdDate name').exec(callback);
+};
+
+EntrySchema.statics.findById = (id, callback) => {
+  const search = {
+    _id: convertId(id),
+  };
+
+  return EntryModel.find(search).select('owner content contest createdDate name').exec(callback);
 };
 
 EntrySchema.statics.findByContest = (contestId, callback) => {
   const search = {
-    contest: contestId,
+    contest: convertId(contestId),
   };
 
-  return EntryModel.find(search).select('owner content contest createdDate').exec(callback);
+  return EntryModel.find(search).select('owner content contest createdDate name').exec(callback);
 };
 
 EntryModel = mongoose.model('Entry', EntrySchema);

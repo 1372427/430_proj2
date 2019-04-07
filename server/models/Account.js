@@ -7,6 +7,7 @@ let AccountModel = {};
 const iterations = 10000;
 const saltLength = 64;
 const keyLength = 64;
+const convertId = mongoose.Types.ObjectId;
 
 const AccountSchema = new mongoose.Schema({
   username: {
@@ -58,6 +59,14 @@ const validatePassword = (doc, password, callback) => {
 AccountSchema.statics.findByUsername = (name, callback) => {
   const search = {
     username: name,
+  };
+
+  return AccountModel.findOne(search, callback);
+};
+
+AccountSchema.statics.findById = (id, callback) => {
+  const search = {
+    _id: convertId(id),
   };
 
   return AccountModel.findOne(search, callback);

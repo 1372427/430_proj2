@@ -43,6 +43,15 @@ const CompetitionSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  entries: {
+    type: Number,
+    default: 0,
+  },
+  winner: {
+    type: mongoose.Schema.ObjectId,
+    required: false,
+    ref: 'Account',
+  },
 });
 
 CompetitionSchema.statics.toAPI = (doc) => ({
@@ -56,7 +65,16 @@ CompetitionSchema.statics.findByOwner = (ownerId, callback) => {
   };
 
   return CompetitionModel.find(search).select(
-    'name owner description reward deadline createdDate').exec(callback);
+    'name owner description reward deadline createdDate entries').exec(callback);
+};
+
+CompetitionSchema.statics.findById = (id, callback) => {
+  const search = {
+    _id: convertId(id),
+  };
+
+  return CompetitionModel.find(search).select(
+    'name owner description reward deadline createdDate entries').exec(callback);
 };
 
 CompetitionSchema.statics.findByDeadline = (date, callback) => {
@@ -67,7 +85,7 @@ CompetitionSchema.statics.findByDeadline = (date, callback) => {
   };
 
   return CompetitionModel.find(search).select(
-    'name owner description reward deadline createdDate').exec(callback);
+    'name owner description reward deadline createdDate entries').exec(callback);
 };
 
 CompetitionModel = mongoose.model('Contest', CompetitionSchema);

@@ -32,32 +32,50 @@ const makeEntryPage = (req, res) => {
 };
 
 const makeEntry = (req, res) => {
-  if (!req.body.content) {
+  if (!req.body.content || !req.body.name) {
     return res.status(400).json({ error: 'Meow! Fill out entry Pwease~' });
   }
 
   const entryData = {
     content: req.body.content,
     contest: req.body.contest,
+    name: req.body.name,
     owner: req.session.account._id,
   };
-
-  const newEntry = new Entry.EntryModel(entryData);
-
-  const entryPromise = newEntry.save();
-
-  entryPromise.then(() => res.json({ redirect: '/home' }));
-
-  entryPromise.catch((err) => {
-    console.log(err);
-    if (err.code === 11000) {
-      return res.status(400).json({ error: 'Entry already exists.' });
+  return Contest.ContestModel.findById(req.body.contest, (err, docs) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occurred' });
     }
+    console.log(docs);
+    if (docs.length < 1) return res.status(400).json({ error: 'Contest does not exist' });
 
-    return res.status(400).json({ error: 'An error occurred' });
+    const newEntry = new Entry.EntryModel(entryData);
+
+    const entryPromise = newEntry.save();
+
+    entryPromise.then(() => {
+      const upgradePromise = Contest.ContestModel.updateOne(
+        { _id: req.body.contest }, { entries: docs[0].entries + 1 });
+
+      upgradePromise.then(() => res.json({ redirect: '/home' }));
+      upgradePromise.catch((err2) => {
+        console.log(err2);
+        return res.status(400).json({ error: 'An error occurred' });
+      });
+    });
+
+    entryPromise.catch((err2) => {
+      console.log(err2);
+      if (err2.code === 11000) {
+        return res.status(400).json({ error: 'Entry already exists.' });
+      }
+
+      return res.status(400).json({ error: 'An error occurred' });
+    });
+
+    return entryPromise;
   });
-
-  return entryPromise;
 };
 
 const getEntriesByOwner = (request, response) => {
@@ -77,8 +95,7 @@ const getEntriesByOwner = (request, response) => {
 const getEntriesByContest = (request, response) => {
   const req = request;
   const res = response;
-
-  return Entry.EntryModel.findByContest(req.body.contest, (err, docs) => {
+  return Entry.EntryModel.findByContest(req.query.contest, (err, docs) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occurred' });

@@ -150,7 +150,7 @@ nav:nth-child(1) {
 #errorMessage {
   font-size: 1.2em;
   font-weight: bold;
-  color: red;
+  color: #b5883d;
   font-style: italic; }
 
 #domo {

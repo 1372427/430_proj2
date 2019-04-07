@@ -25,6 +25,7 @@ const accountPage = (req, res) => {
       username: docs.username,
       email: docs.email,
       type: docs.type,
+      id: docs._id,
     };
     return res.json({ account: accountInfo });
   });
