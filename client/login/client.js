@@ -31,7 +31,15 @@ const handleSignup = (e) => {
         return false;
     }
 
-    if( $("#email").val().split('@').length !== 2 || $("#email").val().split('@')[1].split('.')< 2){
+    const emailCheck1 = $("#email").val().split('@');
+
+    if( emailCheck1.length !== 2 || emailCheck1[0].length<1 || emailCheck1[1].length<1){
+        handleError("Meow! Invalid email");
+        return false;
+    }
+    const emailCheck2 = emailCheck1[1].split('.');
+    if(emailCheck2.length< 2 || emailCheck2[0].length<1 || emailCheck2[1].length<1 ){
+        
         handleError("Meow! Invalid email");
         return false;
     }
@@ -42,6 +50,9 @@ const handleSignup = (e) => {
 };
 
 const LoginWindow = (props) => {
+    
+    $("#domoMessage").animate({width:'hide'}, 350);
+
     return (
         <form id="loginForm" name="loginForm"
             onSubmit={handleLogin}
@@ -60,6 +71,9 @@ const LoginWindow = (props) => {
 };
 
 const SignupWindow = (props) => {
+
+    $("#domoMessage").animate({width:'hide'}, 350);
+
     return (
         <form id="signupForm"
             name="signupForm"

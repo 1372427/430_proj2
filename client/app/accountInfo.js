@@ -8,6 +8,9 @@ const handleAccountChange = (e, formId) => {
 }
 
 const AccountInfo = function(props){
+    
+    $("#domoMessage").animate({width:'hide'}, 350);
+
     console.log(props)
     let accountInfo = props.account;
     let ad;
@@ -23,7 +26,7 @@ const AccountInfo = function(props){
             className="domoForm"
         >
         <input type="hidden" name="_csrf" value={csrf}/>
-        <input className="upgrade" type="submit" value="Upgrade Account" />
+        <input className="makeDomoSubmit" type="submit" value="Upgrade Account" />
         </form>
         </div>);
     }
@@ -43,7 +46,7 @@ const AccountInfo = function(props){
                 <label htmlFor="pass">Password: </label>
                 <input id="pass" type="password" name="pass" placeholder="new password"/>
                 <input type="hidden" name="_csrf" value={csrf}/>
-                <input className="upgrade" type="submit" value="Change Password" />
+                <input className="makeDomoSubmit" type="submit" value="Change Password" />
                 </form>
                 <form id="emailForm"
                     onSubmit = {(e) => handleAccountChange(e, 'emailForm')}
@@ -55,7 +58,7 @@ const AccountInfo = function(props){
                 <label htmlFor="email">Email: </label>
                 <input id="email" type="text" name="email" placeholder="new email"/>
                 <input type="hidden" name="_csrf" value={csrf}/>
-                <input className="upgrade" type="submit" value="ChangeEmail" />
+                <input className="makeDomoSubmit" type="submit" value="ChangeEmail" />
                 </form>
              </div>
              {ad}

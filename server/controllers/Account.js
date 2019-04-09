@@ -80,7 +80,7 @@ const upgrade = (req, res) => {
 
 const emailChange = (req, res) => {
   if (!req.body.email) return res.status(400).json({ error: 'Please put a new email!' });
-  Account.AccountModel.findByUsername(req.session.account.username, (err, docs) => {
+  return Account.AccountModel.findByUsername(req.session.account.username, (err, docs) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occurred' });
@@ -126,7 +126,6 @@ const emailChange = (req, res) => {
 
     return upgradePromise;
   });
-  return res.status(400).json({ error: 'An error occurred' });
 };
 
 

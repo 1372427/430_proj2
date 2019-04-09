@@ -66,7 +66,6 @@ const getContestsByOwner = (request, response) => {
       console.log(err);
       return res.status(400).json({ error: 'An error occurred' });
     }
-
     return res.json({ contests: docs });
   });
 };
@@ -113,16 +112,23 @@ const setWin = (request, response) => {
         return res.status(400).json({ error: 'User does not exist' });
       }
 
-      const mailOptions = {
-        from: 'contest430mvc@gmail.com',
-        to: winner.email,
-        subject: 'Congratulations!',
-        html: `Congrats ${winner.username}! You won a contest!`,
-      };
+      return Account.AccountModel.findById(req.session.account._id, (err4, contestOwner) => {
+        if (err4) {
+          console.log(err4);
+          return res.status(400).json({ error: 'User does not exist' });
+        }
+        const mailOptions = {
+          from: 'contest430mvc@gmail.com',
+          to: winner.email,
+          subject: 'Congratulations!',
+          html: `Congrats ${winner.username}! You won a contest! 
+          Please contact ${contestOwner.username} at 
+          ${contestOwner.email} to recieve your prize!`,
+        };
 
-      return transporter.sendMail(mailOptions, (error, info) => {
-        if (error) console.log(error);
-        else console.log(`email sent: ${info.response}`);
+        return transporter.sendMail(mailOptions, (error5) => {
+          if (error5) console.log(error5);
+        });
       });
     }));
 

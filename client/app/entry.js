@@ -14,6 +14,9 @@ const handleEntry = (e) => {
     return false;
 };
 const EntryWindow = (props) => {
+    
+    $("#domoMessage").animate({width:'hide'}, 350);
+
     let csrf = props.csrf;
     let contest = props.contest;
     return (
@@ -36,6 +39,9 @@ const EntryWindow = (props) => {
 };
 
 const EntryList = (props) => {
+    
+    $("#domoMessage").animate({width:'hide'}, 350);
+    
 console.log(props)
     if(props.entries.length === 0){
         return (

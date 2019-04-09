@@ -10,7 +10,12 @@ const handleCompetition = (e) => {
     let deadline = $("#deadline").val();
     deadline = deadline.split('/');
     deadline = new Date(deadline[2], deadline[0], deadline[1]);
-    //querySelector("#deadline").value =  deadline;
+    if(isNaN(deadline)){
+        
+        handleError("Use date format YYYY/MM/DD!");
+        return false;
+    }
+    
     sendAjax('POST', $("#competitionForm").attr("action"), $("#competitionForm").serialize(), redirect);
 
     return false;
@@ -33,6 +38,9 @@ const handleWinnerClick = (entryId, contestId) => {
 }
 
 const CompetitionWindow = (props) => {
+    
+    $("#domoMessage").animate({width:'hide'}, 350);
+
     if(props.type==="Basic"){
         return (
             <div>
@@ -43,13 +51,14 @@ const CompetitionWindow = (props) => {
 
     const contestNodes = props.contests.map(function(contest){
         return(
-            <div id={contest._id} key={contest._id} className="domo" onClick={(e) =>handlePickWinner(contest._id)}>
+            <div id={contest._id} key={contest._id} className="domo" onClick={(e) =>contest.winner?null:handlePickWinner(contest._id)}>
                 <img src="/assets/img/face2.png" alt="cat" className="domoFace"/>
                 <h3 >Name: {contest.name}</h3>
                 <h3 >Description: {contest.description}</h3>
                 <h3 >Reward: ${contest.reward}</h3>
                 <h3 >Deadline: {contest.deadline.substring(0,10)}</h3>
                 <h3 >Entries: {contest.entries}</h3>
+                <h3>Winner: {contest.winner? "A Winner has already been selected!": "No Winner selected!"}</h3>
             </div>
         );
     });
@@ -57,13 +66,15 @@ const CompetitionWindow = (props) => {
     return (
         <div className="domoList">
         
-        <button onClick={() => ReactDOM.render(<MakeCompetitionWindow csrf={csrf}/>, document.querySelector('#app'))}>Make New Contest</button>
+        <button className="formSubmit" onClick={() => ReactDOM.render(<MakeCompetitionWindow csrf={csrf}/>, document.querySelector('#app'))}>New Contest</button>
             {contestNodes}
         </div>
     );
 };
 
 const MakeCompetitionWindow = (props) => {
+    
+    $("#domoMessage").animate({width:'hide'}, 350);
 
     let dateObj = new Date(Date.now());
     let date = dateObj.getDate();

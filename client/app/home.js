@@ -9,6 +9,8 @@ const handleEnterContest = (id) => {
 
 const ContestList = function(props){
     
+    $("#domoMessage").animate({width:'hide'}, 350);
+    
     if(props.contests.length === 0){
         return (
             <div className="domoList">
