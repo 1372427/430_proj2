@@ -130,51 +130,52 @@ const emailChange = (req, res) => {
 };
 
 
-const usernameChange = (req, res) => {
-  if (!req.body.username) return res.status(400).json({ error: 'Please put a new username!' });
-  Account.AccountModel.findByUsername(req.session.account.username, (err, docs) => {
+const passChange = (req, res) => {
+  if (!req.body.pass) return res.status(400).json({ error: 'Please put a new password!' });
+  return Account.AccountModel.findByUsername(req.session.account.username, (err, docs) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occured' });
     }
     const accountInfo = {
-      username: docs.username,
+      pass: docs.password,
       email: docs.email,
       type: docs.type,
     };
 
+    return Account.AccountModel.generateHash(req.body.pass, (salt, hash) => {
+      const upgradePromise = Account.AccountModel.updateOne(
 
-    const upgradePromise = Account.AccountModel.updateOne(
-      { username: accountInfo.username }, { username: req.body.username });
+      { username: req.session.account.username }, { password: hash, salt });
 
-    upgradePromise.then(() => {
-      const mailOptions = {
-        from: 'contest430mvc@gmail.com',
-        to: accountInfo.email,
-        subject: 'Account Information Change Confirmation',
-        html: `Hello ${accountInfo.username}. You updated your account with Contest.
-         Your new username is ${req.body.username}.`,
-      };
+      upgradePromise.then(() => {
+        const mailOptions = {
+          from: 'contest430mvc@gmail.com',
+          to: accountInfo.email,
+          subject: 'Account Information Change Confirmation',
+          html: `Hello ${accountInfo.username}. You updated your account with Contest.
+         Your new password is ${req.body.pass}.`,
+        };
 
-      transporter.sendMail(mailOptions, (error) => {
-        if (error) console.log(error);
+        transporter.sendMail(mailOptions, (error) => {
+          if (error) console.log(error);
+        });
+
+        res.json({ redirect: '/accountInfo' });
       });
 
-      res.json({ redirect: '/accountInfo' });
+      upgradePromise.catch((err2) => {
+        console.log(err2);
+        if (err2.code === 11000) {
+          return res.status(400).json({ error: 'Account already exists.' });
+        }
+
+        return res.status(400).json({ error: 'An error occurred' });
+      });
+
+      return upgradePromise;
     });
-
-    upgradePromise.catch((err2) => {
-      console.log(err2);
-      if (err2.code === 11000) {
-        return res.status(400).json({ error: 'Account already exists.' });
-      }
-
-      return res.status(400).json({ error: 'An error occurred' });
-    });
-
-    return upgradePromise;
   });
-  return res.status(400).json({ error: 'An error occurred' });
 };
 
 const logout = (req, res) => {
@@ -283,5 +284,5 @@ module.exports.upgrade = upgrade;
 module.exports.signup = signup;
 module.exports.getToken = getToken;
 module.exports.accountPage = accountPage;
-module.exports.usernameChange = usernameChange;
+module.exports.passChange = passChange;
 module.exports.emailChange = emailChange;

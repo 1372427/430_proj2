@@ -33,17 +33,17 @@ const AccountInfo = function(props){
                 <h3 >Username: {accountInfo.username}</h3>
                 <h3 >Email: {accountInfo.email}</h3>
                 <h3>Account Type: {accountInfo.type}</h3>
-                <form id="usernameForm"
-                    onSubmit = {(e) => handleAccountChange(e, 'usernameForm')}
-                    name="usernameForm"
-                    action="/username"
+                <form id="passForm"
+                    onSubmit = {(e) => handleAccountChange(e, 'passForm')}
+                    name="passForm"
+                    action="/pass"
                     method="POST"
                     className="domoForm"
                 >
-                <label htmlFor="username">Username: </label>
-                <input id="username" type="text" name="username" placeholder="new username"/>
+                <label htmlFor="pass">Password: </label>
+                <input id="pass" type="password" name="pass" placeholder="new password"/>
                 <input type="hidden" name="_csrf" value={csrf}/>
-                <input className="upgrade" type="submit" value="Change Username" />
+                <input className="upgrade" type="submit" value="Change Password" />
                 </form>
                 <form id="emailForm"
                     onSubmit = {(e) => handleAccountChange(e, 'emailForm')}

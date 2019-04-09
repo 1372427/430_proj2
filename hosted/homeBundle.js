@@ -64,23 +64,23 @@ var AccountInfo = function AccountInfo(props) {
             ),
             React.createElement(
                 "form",
-                { id: "usernameForm",
+                { id: "passForm",
                     onSubmit: function onSubmit(e) {
-                        return handleAccountChange(e, 'usernameForm');
+                        return handleAccountChange(e, 'passForm');
                     },
-                    name: "usernameForm",
-                    action: "/username",
+                    name: "passForm",
+                    action: "/pass",
                     method: "POST",
                     className: "domoForm"
                 },
                 React.createElement(
                     "label",
-                    { htmlFor: "username" },
-                    "Username: "
+                    { htmlFor: "pass" },
+                    "Password: "
                 ),
-                React.createElement("input", { id: "username", type: "text", name: "username", placeholder: "new username" }),
+                React.createElement("input", { id: "pass", type: "password", name: "pass", placeholder: "new password" }),
                 React.createElement("input", { type: "hidden", name: "_csrf", value: csrf }),
-                React.createElement("input", { className: "upgrade", type: "submit", value: "Change Username" })
+                React.createElement("input", { className: "upgrade", type: "submit", value: "Change Password" })
             ),
             React.createElement(
                 "form",
@@ -199,6 +199,13 @@ var CompetitionWindow = function CompetitionWindow(props) {
     return React.createElement(
         "div",
         { className: "domoList" },
+        React.createElement(
+            "button",
+            { onClick: function onClick() {
+                    return ReactDOM.render(React.createElement(MakeCompetitionWindow, { csrf: csrf }), document.querySelector('#app'));
+                } },
+            "Make New Contest"
+        ),
         contestNodes
     );
 };

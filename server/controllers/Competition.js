@@ -56,6 +56,7 @@ const makeContest = (req, res) => {
   return contestPromise;
 };
 
+
 const getContestsByOwner = (request, response) => {
   const req = request;
   const res = response;
@@ -82,6 +83,16 @@ const getContestsByDate = (request, response) => {
     return res.json({ contests: docs });
   });
 };
+
+const getContest = (req, res) => {
+  if (req.query.owner) {
+    getContestsByOwner(req, res);
+  } else {
+    getContestsByDate(req, res);
+  }
+  return;
+};
+
 
 const setWin = (request, response) => {
   const res = response;
@@ -133,3 +144,4 @@ module.exports.make = makeContest;
 module.exports.getContestsByOwner = getContestsByOwner;
 module.exports.getContestsByDate = getContestsByDate;
 module.exports.setWin = setWin;
+module.exports.getContests = getContest;

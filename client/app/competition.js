@@ -56,6 +56,8 @@ const CompetitionWindow = (props) => {
 
     return (
         <div className="domoList">
+        
+        <button onClick={() => ReactDOM.render(<MakeCompetitionWindow csrf={csrf}/>, document.querySelector('#app'))}>Make New Contest</button>
             {contestNodes}
         </div>
     );
