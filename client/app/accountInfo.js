@@ -10,6 +10,10 @@ const handleAccountChange = (e, formId) => {
 const AccountInfo = function(props){
     
     $("#domoMessage").animate({width:'hide'}, 350);
+    document.querySelector('#accountButton').classList.add('active');
+    document.querySelector('#homeButton').classList.remove('active');
+    document.querySelector('#contestButton').classList.remove('active');
+
 
     console.log(props)
     let accountInfo = props.account;

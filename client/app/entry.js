@@ -16,6 +16,10 @@ const handleEntry = (e) => {
 const EntryWindow = (props) => {
     
     $("#domoMessage").animate({width:'hide'}, 350);
+    
+    document.querySelector('#accountButton').classList.remove('active');
+    document.querySelector('#homeButton').classList.add('active');
+    document.querySelector('#contestButton').classList.remove('active');
 
     let csrf = props.csrf;
     let contest = props.contest;
@@ -42,6 +46,10 @@ const EntryList = (props) => {
     
     $("#domoMessage").animate({width:'hide'}, 350);
     
+    document.querySelector('#accountButton').classList.remove('active');
+    document.querySelector('#homeButton').classList.add('active');
+    document.querySelector('#contestButton').classList.remove('active');
+
 console.log(props)
     if(props.entries.length === 0){
         return (
@@ -55,9 +63,11 @@ console.log(props)
     const contestNodes = props.entries.map(function(entry){
         return(
             <div id={entry._id} key={entry._id} className="domo" onClick={ (e) => handleWinnerClick(entry._id, contestId)}>
-                <img src="/assets/img/face2.png" alt="cat" className="domoFace"/>
+                <img src="/assets/img/face.png" alt="cat" className="domoFace"/>
+                <div className="domoContent">
                 <h3 >Name: {entry.name}</h3> 
                 <h3 >Content: {entry.content}</h3>
+                </div>
             </div>
         );
     });

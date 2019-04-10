@@ -53,6 +53,8 @@ var handleSignup = function handleSignup(e) {
 var LoginWindow = function LoginWindow(props) {
 
     $("#domoMessage").animate({ width: 'hide' }, 350);
+    document.querySelector('#loginButton').classList.add('active');
+    document.querySelector('#signupButton').classList.remove('active');
 
     return React.createElement(
         "form",
@@ -82,6 +84,8 @@ var LoginWindow = function LoginWindow(props) {
 var SignupWindow = function SignupWindow(props) {
 
     $("#domoMessage").animate({ width: 'hide' }, 350);
+    document.querySelector('#loginButton').classList.remove('active');
+    document.querySelector('#signupButton').classList.add('active');
 
     return React.createElement(
         "form",

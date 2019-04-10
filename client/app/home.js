@@ -10,6 +10,11 @@ const handleEnterContest = (id) => {
 const ContestList = function(props){
     
     $("#domoMessage").animate({width:'hide'}, 350);
+
+    
+    document.querySelector('#accountButton').classList.remove('active');
+    document.querySelector('#homeButton').classList.add('active');
+    document.querySelector('#contestButton').classList.remove('active');
     
     if(props.contests.length === 0){
         return (
@@ -22,11 +27,14 @@ const ContestList = function(props){
     const contestNodes = props.contests.map(function(contest){
         return(
             <div id={contest._id} key={contest._id} className="domo" onClick={(e) =>handleEnterContest(contest._id)}>
-                <img src="/assets/img/face2.png" alt="cat" className="domoFace"/>
+                <img src="/assets/img/face.png" alt="cat" className="domoFace"/>
+                
+                <div className="domoContent">
                 <h3 >Name: {contest.name}</h3>
                 <h3 >Description: {contest.description}</h3>
                 <h3 >Reward: ${contest.reward}</h3>
                 <h3 >Deadline: {contest.deadline.substring(0,10)}</h3>
+                </div>
             </div>
         );
     });

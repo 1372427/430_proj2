@@ -1,36 +1,9 @@
 "use strict";
 
-var handleError = function handleError(message) {
-    $("#errorMessage").text(message);
-    $("#domoMessage").animate({ width: 'toggle' }, 350);
-};
-
-var redirect = function redirect(response) {
-    $("#domoMessage").animate({ width: 'hide' }, 350);
-    window.location = response.redirect;
-};
-
-var sendAjax = function sendAjax(type, action, data, success, dataType) {
-    $.ajax({
-        cache: false,
-        type: type,
-        url: action,
-        data: data,
-        dataType: dataType ? dataType : "json",
-        success: success,
-        error: function error(xhr, status, _error) {
-            var messageObj = JSON.parse(xhr.responseText);
-            handleError(messageObj.error);
-        }
-    });
-};
-'use strict';
-
 var handleAccountChange = function handleAccountChange(e, formId) {
     e.preventDefault();
 
-    sendAjax('POST', $('#' + formId).attr("action"), $('#' + formId).serialize(), function () {
-        document.querySelector('#' + formId.split('form')[0]).value = "";
+    sendAjax('POST', $("#" + formId).attr("action"), $("#" + formId).serialize(), function () {
         loadAccountFromServer();
     });
     return false;
@@ -39,98 +12,101 @@ var handleAccountChange = function handleAccountChange(e, formId) {
 var AccountInfo = function AccountInfo(props) {
 
     $("#domoMessage").animate({ width: 'hide' }, 350);
+    document.querySelector('#accountButton').classList.add('active');
+    document.querySelector('#homeButton').classList.remove('active');
+    document.querySelector('#contestButton').classList.remove('active');
 
     console.log(props);
     var accountInfo = props.account;
     var ad = void 0;
     if (accountInfo.type === "Basic") {
         ad = React.createElement(
-            'div',
+            "div",
             null,
             React.createElement(
-                'p',
+                "p",
                 null,
-                'You currently have a Basic account. Upgrade to a Premium account for $5 and be able to host your own competitions!'
+                "You currently have a Basic account. Upgrade to a Premium account for $5 and be able to host your own competitions!"
             ),
             React.createElement(
-                'form',
-                { id: 'upgradeForm',
+                "form",
+                { id: "upgradeForm",
                     onSubmit: function onSubmit(e) {
                         return handleAccountChange(e, 'upgradeForm');
                     },
-                    name: 'upgradeForm',
-                    action: '/upgrade',
-                    method: 'POST',
-                    className: 'domoForm'
+                    name: "upgradeForm",
+                    action: "/upgrade",
+                    method: "POST",
+                    className: "domoForm"
                 },
-                React.createElement('input', { type: 'hidden', name: '_csrf', value: csrf }),
-                React.createElement('input', { className: 'makeDomoSubmit', type: 'submit', value: 'Upgrade Account' })
+                React.createElement("input", { type: "hidden", name: "_csrf", value: csrf }),
+                React.createElement("input", { className: "makeDomoSubmit", type: "submit", value: "Upgrade Account" })
             )
         );
     }
     return React.createElement(
-        'div',
-        { className: 'domoList' },
+        "div",
+        { className: "domoList" },
         React.createElement(
-            'div',
-            { className: 'domo' },
+            "div",
+            { className: "domo" },
             React.createElement(
-                'h3',
+                "h3",
                 null,
-                'Username: ',
+                "Username: ",
                 accountInfo.username
             ),
             React.createElement(
-                'h3',
+                "h3",
                 null,
-                'Email: ',
+                "Email: ",
                 accountInfo.email
             ),
             React.createElement(
-                'h3',
+                "h3",
                 null,
-                'Account Type: ',
+                "Account Type: ",
                 accountInfo.type
             ),
             React.createElement(
-                'form',
-                { id: 'passForm',
+                "form",
+                { id: "passForm",
                     onSubmit: function onSubmit(e) {
                         return handleAccountChange(e, 'passForm');
                     },
-                    name: 'passForm',
-                    action: '/pass',
-                    method: 'POST',
-                    className: 'domoForm'
+                    name: "passForm",
+                    action: "/pass",
+                    method: "POST",
+                    className: "domoForm"
                 },
                 React.createElement(
-                    'label',
-                    { htmlFor: 'pass' },
-                    'Password: '
+                    "label",
+                    { htmlFor: "pass" },
+                    "Password: "
                 ),
-                React.createElement('input', { id: 'pass', type: 'password', name: 'pass', placeholder: 'new password' }),
-                React.createElement('input', { type: 'hidden', name: '_csrf', value: csrf }),
-                React.createElement('input', { className: 'makeDomoSubmit', type: 'submit', value: 'Change Password' })
+                React.createElement("input", { id: "pass", type: "password", name: "pass", placeholder: "new password" }),
+                React.createElement("input", { type: "hidden", name: "_csrf", value: csrf }),
+                React.createElement("input", { className: "makeDomoSubmit", type: "submit", value: "Change Password" })
             ),
             React.createElement(
-                'form',
-                { id: 'emailForm',
+                "form",
+                { id: "emailForm",
                     onSubmit: function onSubmit(e) {
                         return handleAccountChange(e, 'emailForm');
                     },
-                    name: 'emailForm',
-                    action: '/email',
-                    method: 'POST',
-                    className: 'domoForm'
+                    name: "emailForm",
+                    action: "/email",
+                    method: "POST",
+                    className: "domoForm"
                 },
                 React.createElement(
-                    'label',
-                    { htmlFor: 'email' },
-                    'Email: '
+                    "label",
+                    { htmlFor: "email" },
+                    "Email: "
                 ),
-                React.createElement('input', { id: 'email', type: 'text', name: 'email', placeholder: 'new email' }),
-                React.createElement('input', { type: 'hidden', name: '_csrf', value: csrf }),
-                React.createElement('input', { className: 'makeDomoSubmit', type: 'submit', value: 'ChangeEmail' })
+                React.createElement("input", { id: "email", type: "text", name: "email", placeholder: "new email" }),
+                React.createElement("input", { type: "hidden", name: "_csrf", value: csrf }),
+                React.createElement("input", { className: "makeDomoSubmit", type: "submit", value: "ChangeEmail" })
             )
         ),
         ad
@@ -186,6 +162,10 @@ var CompetitionWindow = function CompetitionWindow(props) {
 
     $("#domoMessage").animate({ width: 'hide' }, 350);
 
+    document.querySelector('#accountButton').classList.remove('active');
+    document.querySelector('#homeButton').classList.remove('active');
+    document.querySelector('#contestButton').classList.add('active');
+
     if (props.type === "Basic") {
         return React.createElement(
             "div",
@@ -200,42 +180,46 @@ var CompetitionWindow = function CompetitionWindow(props) {
             { id: contest._id, key: contest._id, className: "domo", onClick: function onClick(e) {
                     return contest.winner ? null : handlePickWinner(contest._id);
                 } },
-            React.createElement("img", { src: "/assets/img/face2.png", alt: "cat", className: "domoFace" }),
+            React.createElement("img", { src: "/assets/img/face.png", alt: "cat", className: "domoFace" }),
             React.createElement(
-                "h3",
-                null,
-                "Name: ",
-                contest.name
-            ),
-            React.createElement(
-                "h3",
-                null,
-                "Description: ",
-                contest.description
-            ),
-            React.createElement(
-                "h3",
-                null,
-                "Reward: $",
-                contest.reward
-            ),
-            React.createElement(
-                "h3",
-                null,
-                "Deadline: ",
-                contest.deadline.substring(0, 10)
-            ),
-            React.createElement(
-                "h3",
-                null,
-                "Entries: ",
-                contest.entries
-            ),
-            React.createElement(
-                "h3",
-                null,
-                "Winner: ",
-                contest.winner ? "A Winner has already been selected!" : "No Winner selected!"
+                "div",
+                { className: "domoContent" },
+                React.createElement(
+                    "h3",
+                    null,
+                    "Name: ",
+                    contest.name
+                ),
+                React.createElement(
+                    "h3",
+                    null,
+                    "Description: ",
+                    contest.description
+                ),
+                React.createElement(
+                    "h3",
+                    null,
+                    "Reward: $",
+                    contest.reward
+                ),
+                React.createElement(
+                    "h3",
+                    null,
+                    "Deadline: ",
+                    contest.deadline.substring(0, 10)
+                ),
+                React.createElement(
+                    "h3",
+                    null,
+                    "Entries: ",
+                    contest.entries
+                ),
+                React.createElement(
+                    "h3",
+                    null,
+                    "Winner: ",
+                    contest.winner ? "A Winner has already been selected!" : "No Winner selected!"
+                )
             )
         );
     });
@@ -257,6 +241,10 @@ var CompetitionWindow = function CompetitionWindow(props) {
 var MakeCompetitionWindow = function MakeCompetitionWindow(props) {
 
     $("#domoMessage").animate({ width: 'hide' }, 350);
+
+    document.querySelector('#accountButton').classList.remove('active');
+    document.querySelector('#homeButton').classList.remove('active');
+    document.querySelector('#contestButton').classList.add('active');
 
     var dateObj = new Date(Date.now());
     var date = dateObj.getDate();
@@ -334,6 +322,10 @@ var EntryWindow = function EntryWindow(props) {
 
     $("#domoMessage").animate({ width: 'hide' }, 350);
 
+    document.querySelector('#accountButton').classList.remove('active');
+    document.querySelector('#homeButton').classList.add('active');
+    document.querySelector('#contestButton').classList.remove('active');
+
     var csrf = props.csrf;
     var contest = props.contest;
     return React.createElement(
@@ -367,6 +359,10 @@ var EntryList = function EntryList(props) {
 
     $("#domoMessage").animate({ width: 'hide' }, 350);
 
+    document.querySelector('#accountButton').classList.remove('active');
+    document.querySelector('#homeButton').classList.add('active');
+    document.querySelector('#contestButton').classList.remove('active');
+
     console.log(props);
     if (props.entries.length === 0) {
         return React.createElement(
@@ -387,18 +383,22 @@ var EntryList = function EntryList(props) {
             { id: entry._id, key: entry._id, className: "domo", onClick: function onClick(e) {
                     return handleWinnerClick(entry._id, contestId);
                 } },
-            React.createElement("img", { src: "/assets/img/face2.png", alt: "cat", className: "domoFace" }),
+            React.createElement("img", { src: "/assets/img/face.png", alt: "cat", className: "domoFace" }),
             React.createElement(
-                "h3",
-                null,
-                "Name: ",
-                entry.name
-            ),
-            React.createElement(
-                "h3",
-                null,
-                "Content: ",
-                entry.content
+                "div",
+                { className: "domoContent" },
+                React.createElement(
+                    "h3",
+                    null,
+                    "Name: ",
+                    entry.name
+                ),
+                React.createElement(
+                    "h3",
+                    null,
+                    "Content: ",
+                    entry.content
+                )
             )
         );
     });
@@ -413,7 +413,7 @@ var EntryList = function EntryList(props) {
 var createEntryWindow = function createEntryWindow(csrf, contest) {
     ReactDOM.render(React.createElement(EntryWindow, { csrf: csrf, contest: contest }), document.querySelector("#app"));
 };
-"use strict";
+'use strict';
 
 var csrf = void 0;
 
@@ -426,55 +426,63 @@ var ContestList = function ContestList(props) {
 
     $("#domoMessage").animate({ width: 'hide' }, 350);
 
+    document.querySelector('#accountButton').classList.remove('active');
+    document.querySelector('#homeButton').classList.add('active');
+    document.querySelector('#contestButton').classList.remove('active');
+
     if (props.contests.length === 0) {
         return React.createElement(
-            "div",
-            { className: "domoList" },
+            'div',
+            { className: 'domoList' },
             React.createElement(
-                "h3",
-                { className: "emptyDomo" },
-                "No Contests yet"
+                'h3',
+                { className: 'emptyDomo' },
+                'No Contests yet'
             )
         );
     }
 
     var contestNodes = props.contests.map(function (contest) {
         return React.createElement(
-            "div",
-            { id: contest._id, key: contest._id, className: "domo", onClick: function onClick(e) {
+            'div',
+            { id: contest._id, key: contest._id, className: 'domo', onClick: function onClick(e) {
                     return handleEnterContest(contest._id);
                 } },
-            React.createElement("img", { src: "/assets/img/face2.png", alt: "cat", className: "domoFace" }),
+            React.createElement('img', { src: '/assets/img/face.png', alt: 'cat', className: 'domoFace' }),
             React.createElement(
-                "h3",
-                null,
-                "Name: ",
-                contest.name
-            ),
-            React.createElement(
-                "h3",
-                null,
-                "Description: ",
-                contest.description
-            ),
-            React.createElement(
-                "h3",
-                null,
-                "Reward: $",
-                contest.reward
-            ),
-            React.createElement(
-                "h3",
-                null,
-                "Deadline: ",
-                contest.deadline.substring(0, 10)
+                'div',
+                { className: 'domoContent' },
+                React.createElement(
+                    'h3',
+                    null,
+                    'Name: ',
+                    contest.name
+                ),
+                React.createElement(
+                    'h3',
+                    null,
+                    'Description: ',
+                    contest.description
+                ),
+                React.createElement(
+                    'h3',
+                    null,
+                    'Reward: $',
+                    contest.reward
+                ),
+                React.createElement(
+                    'h3',
+                    null,
+                    'Deadline: ',
+                    contest.deadline.substring(0, 10)
+                )
             )
         );
     });
 
     return React.createElement(
-        "div",
-        { className: "domoList" },
+        'div',
+        { className: 'domoList' },
         contestNodes
     );
 };
@@ -528,3 +536,29 @@ var getToken = function getToken() {
 $(document).ready(function () {
     getToken();
 });
+"use strict";
+
+var handleError = function handleError(message) {
+    $("#errorMessage").text(message);
+    $("#domoMessage").animate({ width: 'toggle' }, 350);
+};
+
+var redirect = function redirect(response) {
+    $("#domoMessage").animate({ width: 'hide' }, 350);
+    window.location = response.redirect;
+};
+
+var sendAjax = function sendAjax(type, action, data, success, dataType) {
+    $.ajax({
+        cache: false,
+        type: type,
+        url: action,
+        data: data,
+        dataType: dataType ? dataType : "json",
+        success: success,
+        error: function error(xhr, status, _error) {
+            var messageObj = JSON.parse(xhr.responseText);
+            handleError(messageObj.error);
+        }
+    });
+};

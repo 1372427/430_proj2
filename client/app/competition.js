@@ -40,6 +40,10 @@ const handleWinnerClick = (entryId, contestId) => {
 const CompetitionWindow = (props) => {
     
     $("#domoMessage").animate({width:'hide'}, 350);
+    
+    document.querySelector('#accountButton').classList.remove('active');
+    document.querySelector('#homeButton').classList.remove('active');
+    document.querySelector('#contestButton').classList.add('active');
 
     if(props.type==="Basic"){
         return (
@@ -52,13 +56,16 @@ const CompetitionWindow = (props) => {
     const contestNodes = props.contests.map(function(contest){
         return(
             <div id={contest._id} key={contest._id} className="domo" onClick={(e) =>contest.winner?null:handlePickWinner(contest._id)}>
-                <img src="/assets/img/face2.png" alt="cat" className="domoFace"/>
+                <img src="/assets/img/face.png" alt="cat" className="domoFace"/>
+                
+                <div className="domoContent">
                 <h3 >Name: {contest.name}</h3>
                 <h3 >Description: {contest.description}</h3>
                 <h3 >Reward: ${contest.reward}</h3>
                 <h3 >Deadline: {contest.deadline.substring(0,10)}</h3>
                 <h3 >Entries: {contest.entries}</h3>
                 <h3>Winner: {contest.winner? "A Winner has already been selected!": "No Winner selected!"}</h3>
+                </div>
             </div>
         );
     });
@@ -75,6 +82,10 @@ const CompetitionWindow = (props) => {
 const MakeCompetitionWindow = (props) => {
     
     $("#domoMessage").animate({width:'hide'}, 350);
+
+    document.querySelector('#accountButton').classList.remove('active');
+    document.querySelector('#homeButton').classList.remove('active');
+    document.querySelector('#contestButton').classList.add('active');
 
     let dateObj = new Date(Date.now());
     let date = dateObj.getDate();
