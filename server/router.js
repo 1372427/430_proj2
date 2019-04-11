@@ -21,6 +21,7 @@ const router = (app) => {
   app.post('/makeContest', mid.requiresLogin, controllers.Competition.make);
   app.post('/setWinner', mid.requiresLogin, controllers.Competition.setWin);
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
+  app.get('*', controllers.NotFound.notfoundPage);
 };
 
 module.exports = router;

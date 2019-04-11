@@ -263,3 +263,9 @@ h3 {
 
 .domo:last-child {
   margin-bottom: 10px; }
+
+#notFound {
+  width: 400px;
+  justify-content: center;
+  margin: auto;
+  text-align: center; }

@@ -12,9 +12,11 @@ const mascots = {
   Inu: '7.png',
   Neko: '8.png',
   Ren: '9.png',
+  CSS: '10.png',
   Usagi: '11.png',
   Pisa: '12.png',
   Tanuki: '13.png',
+  Ongaku: '14.png',
 };
 
 const getMascots = (req, res) => res.json({ mascots });
