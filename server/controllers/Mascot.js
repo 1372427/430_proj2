@@ -2,6 +2,7 @@ const models = require('../models');
 
 const Account = models.Account;
 
+// mascots by name and filename
 const mascots = {
   Yuki: '1.png',
   Banyana: '2.png',
@@ -19,14 +20,17 @@ const mascots = {
   Ongaku: '14.png',
 };
 
+// send back all mascots
 const getMascots = (req, res) => res.json({ mascots });
 
+// assign account to certain mascot
 const setMascot = (request, res) => {
   const req = request;
   const newMascot = req.body.mascot;
+  // update account
   const updatePromise = Account.AccountModel.updateOne(
         { _id: req.session.account._id }, { mascot: req.body.mascot });
-
+  // if update successful, change session information and refresh page
   updatePromise.then(() => {
     req.session.account.mascot = newMascot;
     res.json({ redirect: '/accountInfo' });

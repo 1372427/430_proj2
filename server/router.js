@@ -1,6 +1,8 @@
 const controllers = require('./controllers');
 const mid = require('./middleware');
 
+// set up all get and post requests
+// anything not defined routes to not found page
 const router = (app) => {
   app.get('/getToken', mid.requiresSecure, controllers.Account.getToken);
   app.get('/getContests', mid.requiresLogin, controllers.Competition.getContests);

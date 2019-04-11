@@ -1,20 +1,53 @@
-What your site does and what its purpose.
-How can this app be profitable? What profit model (ads, service, microtransactions, etc) are you considering?
-How you used a templating language and which templating language you used
-How you used MVC
-What you used Mongo for (what did you store/retrieve)
-How you used a templating language and which templating language you used
-How did you go above and beyond
-If in a group, what did each member of the group do? What were they responsible for? How did they contribute to both the server and client in significant ways? Please discuss what each member did in the client and in the server. 
-All members need to submit separate documentation. Documentation will be private to me.
+# Documentation
+## Purpose
+This site is a site allowing users to make and enter contests. The purpose of this site is to allow Premium users
+to make contests in a simple way and have all users able to view current contests. All users can enter contests. The owner of the 
+contest can then select winners, which allows them to get in contact with the winner through email.
+
+## Profit model
+This site is profitable by having two types of accounts. Basic members can create accounts for free. These members have access to all 
+features except creating their own contests. This means they can enter contests and change their mascots. A Basic member can upgrade 
+to Premium by paying $5. This then allows them to also create contests. 
+
+## Templating Language 
+How you used a templating language and which templating language you used  
+I used handlebars as the templating language
+
+## MVC
+How you used MVC  
+React  
+Handlebars
+
+## Mongo
+I used MongoDB to store account, contest, and entry information. 
+
+### Account
+Accounts store the user's username, password, email, account type (Basic or Premium) and chosen mascot.  
+
+### Contest
+Contests store the name of the contest, owner, description, reward amount in dollars, deadline as a Date, number of entries, 
+winner if one has been chosen, and the mascot of the person who created the contest at the time of its creation.
+
+### Entry
+Entries store the name of the entry, owner, content as a String, and the creator's mascot at the time of the entry's creation.
 
 
+## Above and Beyond
+I went above and beyond by using React. I also used another npm module to allow me to email people on account information change, 
+and contest win. 
+
+
+# Resources
+Below are links to the various images I used as mascots for the website. 
 
 https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiXs56ejLThAhXETd8KHYbiBmsQjRx6BAgBEAU&url=https%3A%2F%2Fwww.teepublic.com%2Fkids-long-sleeve-t-shirt%2F3821775-a-chibi-cat-cute&psig=AOvVaw1AZnOIaC78TtepbnEEuthw&ust=1554386796845761 
-cat img 
+
+
+https://stickershop.line-scdn.net/stickershop/v1/product/1235641/LINEStorePC/main.png;compress=true
 
 https://cdn130.picsart.com/240333569031212.png?c256x256
 
+http://www.pngonly.com/wp-content/uploads/2017/06/Chibi-PNG.png
 
 https://cdn130.picsart.com/267539347020211.png?r1024x1024
 

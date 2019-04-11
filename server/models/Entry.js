@@ -46,6 +46,7 @@ EntrySchema.statics.toAPI = (doc) => ({
   contest: doc.contest,
 });
 
+// find entry by ownerID
 EntrySchema.statics.findByOwner = (ownerId, callback) => {
   const search = {
     owner: convertId(ownerId),
@@ -55,6 +56,7 @@ EntrySchema.statics.findByOwner = (ownerId, callback) => {
     'owner content contest createdDate name mascot').exec(callback);
 };
 
+// find entry by entry ID
 EntrySchema.statics.findById = (id, callback) => {
   const search = {
     _id: convertId(id),
@@ -64,6 +66,7 @@ EntrySchema.statics.findById = (id, callback) => {
     'owner content contest createdDate name mascot').exec(callback);
 };
 
+// find entry by contest entry was entered into
 EntrySchema.statics.findByContest = (contestId, callback) => {
   const search = {
     contest: convertId(contestId),

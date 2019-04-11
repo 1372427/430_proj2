@@ -1,28 +1,36 @@
 
+//get form information and send to server to create an entry
 const handleEntry = (e) => {
     e.preventDefault();
-
+    //hide error message
     $("#domoMessage").animate({width:'hide'}, 350);
 
-    if($("#content").val() === '' ){
-        handleError("RAWR! All fields are required");
+    //check that all fields are filled
+    if($("#name").val() === '' || $("#content").val() === '' ){
+        handleError("All fields are required");
         return false;
     }
 
+    //all is good, send request to server
     sendAjax('POST', $("#entryForm").attr("action"), $("#entryForm").serialize(), redirect);
 
     return false;
 };
+
+//React Component to create entry
 const EntryWindow = (props) => {
-    
+    //hide error message
     $("#domoMessage").animate({width:'hide'}, 350);
     
+    //set active nav bar
     document.querySelector('#accountButton').classList.remove('active');
     document.querySelector('#homeButton').classList.add('active');
     document.querySelector('#contestButton').classList.remove('active');
 
     let csrf = props.csrf;
     let contest = props.contest;
+
+    //return form with input for name and entry content
     return (
         <form id="entryForm"
             name="entryForm"
@@ -42,15 +50,17 @@ const EntryWindow = (props) => {
     );
 };
 
+//React Component for listing all entries 
 const EntryList = (props) => {
-    
+    //hide error message
     $("#domoMessage").animate({width:'hide'}, 350);
     
+    //set active nav bar
     document.querySelector('#accountButton').classList.remove('active');
     document.querySelector('#homeButton').classList.add('active');
     document.querySelector('#contestButton').classList.remove('active');
 
-console.log(props)
+    //If no entries, write a message
     if(props.entries.length === 0){
         return (
             <div className="domoList">
@@ -59,6 +69,7 @@ console.log(props)
         );
     }
     
+    //for each entry, show the mascot, name, and content
     let contestId = props.contest
     const contestNodes = props.entries.map(function(entry){
         return(
@@ -72,6 +83,7 @@ console.log(props)
         );
     });
 
+    //display list of entries
     return (
         <div className="domoList">
             {contestNodes}
@@ -79,6 +91,7 @@ console.log(props)
     );
 };
 
+//call the React Component to make a new entry
 const createEntryWindow = (csrf, contest) => {
     ReactDOM.render(
         <EntryWindow csrf={csrf} contest={contest}/>,

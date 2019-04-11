@@ -1,12 +1,17 @@
+//send request to create a new competition to the server
 const handleCompetition = (e) => {
     e.preventDefault();
 
+    //hide error message
     $("#domoMessage").animate({width:'hide'}, 350);
 
+    //check that all fields are filled
     if($("#name").val() == '' || $("#descrip").val() == ''){
-        handleError("Meow! Fill all fields please!");
+        handleError("Fill all fields please!");
         return false;
     }
+
+    //try to create date, send error message if in wrong format
     let deadline = $("#deadline").val();
     deadline = deadline.split('/');
     deadline = new Date(deadline[2], deadline[0], deadline[1]);
@@ -16,11 +21,13 @@ const handleCompetition = (e) => {
         return false;
     }
     
+    //all is good, send the request to the server and load redirected page
     sendAjax('POST', $("#competitionForm").attr("action"), $("#competitionForm").serialize(), redirect);
 
     return false;
 };
 
+//get entries from a contest from the server and create React Coponent
 const handlePickWinner = (id) => {
     sendAjax('GET', `/entries?contest=${id}`, null, (data) => {
         ReactDOM.render(
@@ -29,6 +36,7 @@ const handlePickWinner = (id) => {
     });
 }
 
+//Send selected winner to the server and display confirmation page
 const handleWinnerClick = (entryId, contestId) => {
     sendAjax('POST', '/setWinner', `entry=${entryId}&contest=${contestId}&_csrf=${csrf}`, (data) => {
         let username = data.winner.username;
@@ -44,14 +52,17 @@ const handleWinnerClick = (entryId, contestId) => {
     });
 }
 
+//React Component to display all of user's contests and allow them to create more
 const CompetitionWindow = (props) => {
-    
+    //hide error message
     $("#domoMessage").animate({width:'hide'}, 350);
     
+    //select active nav bar
     document.querySelector('#accountButton').classList.remove('active');
     document.querySelector('#homeButton').classList.remove('active');
     document.querySelector('#contestButton').classList.add('active');
 
+    //Check if a basic account
     if(props.type==="Basic"){
         return (
             <div className="domoList">
@@ -61,6 +72,7 @@ const CompetitionWindow = (props) => {
         )
     }
 
+    //run through all contests and set up information
     const contestNodes = props.contests.map(function(contest){
         return(
             <div id={contest._id} key={contest._id} className="domo" onClick={(e) =>contest.winner?handleError("Already Won!"):handlePickWinner(contest._id)}>
@@ -78,6 +90,7 @@ const CompetitionWindow = (props) => {
         );
     });
 
+    //display all contests and create a button to create new contests
     return (
         <div className="domoList">
         
@@ -88,20 +101,24 @@ const CompetitionWindow = (props) => {
     );
 };
 
+//React Component to make new contests
 const MakeCompetitionWindow = (props) => {
-    
+    //hide error message
     $("#domoMessage").animate({width:'hide'}, 350);
 
+    //select active nav bar
     document.querySelector('#accountButton').classList.remove('active');
     document.querySelector('#homeButton').classList.remove('active');
     document.querySelector('#contestButton').classList.add('active');
 
+    //get current date
     let dateObj = new Date(Date.now());
     let date = dateObj.getDate();
     let month = dateObj.getMonth();
     let year = dateObj.getFullYear();
     let csrf = props.csrf;
     
+    //create form, with inputs for name, description, reward, and deadline
     return (
         <form id="competitionForm" name="competitionForm"
             onSubmit={handleCompetition}
@@ -123,10 +140,13 @@ const MakeCompetitionWindow = (props) => {
     );
 }
 
+//get the contests for this user and create the React Component
 const createCompetitionWindow = (csrf) => {
+    //get info about this user
     sendAjax('GET', '/accountInfo', null, (data) => {
-        console.log(data)
+        //check account type
         let type = data.account.type;
+        //if a Premium user, query server for all contests made by this user
         if(type==="Premium"){
             sendAjax('GET', `/getContests?owner=${data.account.id}`, null, (data) => {
                 let contests = data.contests;
@@ -135,6 +155,7 @@ const createCompetitionWindow = (csrf) => {
                     document.querySelector("#app")
                 );})
         }
+        //is a basic user, send without any contests
         ReactDOM.render(
             <CompetitionWindow csrf={csrf} type={type} contests={[]}/>,
             document.querySelector("#app")

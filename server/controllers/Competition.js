@@ -6,6 +6,7 @@ const Contest = models.Competition;
 const Entry = models.Entry;
 const Account = models.Account;
 
+// email setup
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -14,6 +15,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// not being used as switched to react
 const makeContestPage = (req, res) => {
   Contest.ContestModel.findById(req.session.account._id, (err, docs) => {
     if (err) {
@@ -26,12 +28,14 @@ const makeContestPage = (req, res) => {
   });
 };
 
+// handle making a new contest
 const makeContest = (req, res) => {
-  console.log('contest');
+  // check all fields filled
   if (!req.body.descrip || !req.body.name || !req.body.reward || !req.body.deadline) {
-    return res.status(400).json({ error: 'Meow! Fill out all fields Pwease~' });
+    return res.status(400).json({ error: 'Fill out all fields!' });
   }
 
+  // set up information
   const contestData = {
     name: req.body.name,
     owner: req.session.account._id,
@@ -40,11 +44,13 @@ const makeContest = (req, res) => {
     deadline: req.body.deadline,
     mascot: mascots.mascots[req.session.account.mascot],
   };
-  console.log(contestData);
+  // create new contest
   const newContest = new Contest.ContestModel(contestData);
 
+  // save contest
   const contestPromise = newContest.save();
 
+  // if save successful, redirect to home page
   contestPromise.then(() => res.json({ redirect: '/home' }));
 
   contestPromise.catch((err) => {
@@ -59,11 +65,12 @@ const makeContest = (req, res) => {
   return contestPromise;
 };
 
-
+// get all cntests made by given owner
 const getContestsByOwner = (request, response) => {
   const req = request;
   const res = response;
 
+  // query database for contests by current account
   return Contest.ContestModel.findByOwner(req.session.account._id, (err, docs) => {
     if (err) {
       console.log(err);
@@ -73,9 +80,11 @@ const getContestsByOwner = (request, response) => {
   });
 };
 
+// get all contests with a deadline in the future
 const getContestsByDate = (request, response) => {
   const res = response;
 
+  // query database for all contests with a deadline greater or equal to today
   return Contest.ContestModel.findByDeadline(Date.now(), (err, docs) => {
     if (err) {
       console.log(err);
@@ -86,6 +95,8 @@ const getContestsByDate = (request, response) => {
   });
 };
 
+// determine if need to get contests by owner or by date
+// by checking if an owner is queried
 const getContest = (req, res) => {
   if (req.query.owner) {
     getContestsByOwner(req, res);
@@ -95,17 +106,19 @@ const getContest = (req, res) => {
   return;
 };
 
-
+// set the winner to a contest and email the winner
 const setWin = (request, response) => {
   const res = response;
   const req = request;
 
+  // find the given entry
   return Entry.EntryModel.findById(req.body.entry, (err, docs) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'Entry does not exist' });
     }
 
+    // find the contest and update winner
     const upgradePromise = Contest.ContestModel.updateOne(
       { _id: req.body.contest }, { winner: docs[0].owner });
 
@@ -115,11 +128,13 @@ const setWin = (request, response) => {
         return res.status(400).json({ error: 'User does not exist' });
       }
 
+      // if update is successful, find the account owner of the entry
       return Account.AccountModel.findById(req.session.account._id, (err4, contestOwner) => {
         if (err4) {
           console.log(err4);
           return res.status(400).json({ error: 'User does not exist' });
         }
+        // configure email
         const mailOptions = {
           from: 'contest430mvc@gmail.com',
           to: winner.email,
@@ -129,6 +144,7 @@ const setWin = (request, response) => {
           ${contestOwner.email} to recieve your prize!`,
         };
 
+        // send email
         return transporter.sendMail(mailOptions, (error5) => {
           if (error5) console.log(error5);
           return res.status(200).json({ winner:

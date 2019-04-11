@@ -1,13 +1,16 @@
+//update and show error message
 const handleError = (message) => {
     $("#errorMessage").text(message);
     $("#domoMessage").animate({width: 'toggle'}, 350);
 };
 
+//hide error message and redirect to given page
 const redirect = (response) => {
     $("#domoMessage").animate({width: 'hide'}, 350);
     window.location = response.redirect;
 };
 
+//send request using Ajax
 const sendAjax = (type, action, data, success, dataType) => {
     $.ajax({
         cache: false, 

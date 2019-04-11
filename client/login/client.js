@@ -1,57 +1,65 @@
+//send login request to server
 const handleLogin = (e) => {
     e.preventDefault();
 
+    //hide error message
     $("#domoMessage").animate({width:'hide'}, 350);
 
+    //check all fields have values
     if($("#user").val() == '' || $("#pass").val() == ''){
-        handleError("RAWR! Username or password is empty");
+        handleError("Fill all fields!");
         return false;
     }
-
-    console.log($("input[name=_csrf]").val());
     
+    //send request to server
     sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect);
 
     return false;
 };
 
-
+//send sign up request to server
 const handleSignup = (e) => {
     e.preventDefault();
 
+    //hide error message
     $("#domoMessage").animate({width:'hide'}, 350);
 
+    //check all fields are filled
     if($("#user").val() === '' || $("#pass").val() === '' || $("#pass2").val() === '' || $("#email").val() === ''){
-        handleError("Meow! All fields are required");
+        handleError("All fields are required");
         return false;
     }
 
+    //check the two passwords match
     if( $("#pass").val() !==  $("#pass2").val()){
-        handleError("Meow! Passwords do not match");
+        handleError("Passwords do not match");
         return false;
     }
 
+    //check that the email is in proper format
     const emailCheck1 = $("#email").val().split('@');
 
     if( emailCheck1.length !== 2 || emailCheck1[0].length<1 || emailCheck1[1].length<1){
-        handleError("Meow! Invalid email");
+        handleError("Invalid email");
         return false;
     }
     const emailCheck2 = emailCheck1[1].split('.');
     if(emailCheck2.length< 2 || emailCheck2[0].length<1 || emailCheck2[1].length<1 ){
-        
-        handleError("Meow! Invalid email");
+        handleError("Invalid email");
         return false;
     }
     
+    //all is good, send request to server
     sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect);
 
     return false;
 };
 
+//React Component for login form
 const LoginWindow = (props) => {
-    
+    //hide error message
     $("#domoMessage").animate({width:'hide'}, 350);
+
     document.querySelector('#loginButton').classList.add('active');
     document.querySelector('#signupButton').classList.remove('active');
 
@@ -72,8 +80,9 @@ const LoginWindow = (props) => {
     );
 };
 
+//React Component for sign up form
 const SignupWindow = (props) => {
-
+    //hide error message
     $("#domoMessage").animate({width:'hide'}, 350);
     document.querySelector('#loginButton').classList.remove('active');
     document.querySelector('#signupButton').classList.add('active');
@@ -100,6 +109,7 @@ const SignupWindow = (props) => {
     );
 };
 
+//call the react component for the login form
 const createLoginWindow = (csrf) => {
     ReactDOM.render(
         <LoginWindow csrf={csrf} />,
@@ -107,6 +117,7 @@ const createLoginWindow = (csrf) => {
     );
 };
 
+//call the react component for the sign up form
 const createSignupWindow = (csrf) => {
     ReactDOM.render(
         <SignupWindow csrf={csrf} />,
@@ -114,10 +125,13 @@ const createSignupWindow = (csrf) => {
     );
 };
 
+//set up initial navbar connections and show react component for login
 const setup = (csrf) => {
+    //set up nav bar
     const loginButton = document.querySelector("#loginButton");
     const signupButton = document.querySelector("#signupButton");
 
+    //set up listeners
     signupButton.addEventListener("click", (e) => {
         e.preventDefault();
         createSignupWindow(csrf);

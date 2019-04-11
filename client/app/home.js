@@ -1,21 +1,22 @@
 let csrf;
 
-
-
+//call the function to create the React Component to 
+//enter the given contest
 const handleEnterContest = (id) => {
-    console.log(id)
     createEntryWindow(csrf, id);
 }
 
+//React Component to show current contests
 const ContestList = function(props){
-    
+    //hide error message
     $("#domoMessage").animate({width:'hide'}, 350);
 
-    
+    //set active nav bar
     document.querySelector('#accountButton').classList.remove('active');
     document.querySelector('#homeButton').classList.add('active');
     document.querySelector('#contestButton').classList.remove('active');
     
+    //if no contests, display message
     if(props.contests.length === 0){
         return (
             <div className="domoList">
@@ -24,6 +25,7 @@ const ContestList = function(props){
         );
     }
     
+    //for each contest, show its name, description, reward, and deadline
     const contestNodes = props.contests.map(function(contest){
         return(
             <div id={contest._id} key={contest._id} className="domo" onClick={(e) =>handleEnterContest(contest._id)}>
@@ -39,6 +41,7 @@ const ContestList = function(props){
         );
     });
 
+    //show all contests in list
     return (
         <div className="domoList">
             {contestNodes}
@@ -47,7 +50,7 @@ const ContestList = function(props){
 };
 
 
-
+//query the server to get the account type and current contests
 const loadCompetitionsFromServer = () => {
     sendAjax('GET', '/accountInfo', null, (data) => {
         let type = data.account.type;
@@ -59,13 +62,14 @@ const loadCompetitionsFromServer = () => {
     });
 };
 
+//function to set up app after login
 const setup = function(csrf){
-    console.log('maker')
-
+    //initialize React Component showing all current contests to show none
     ReactDOM.render(
         <ContestList contests={[]} />, document.querySelector("#app")
     );
     
+    //set up navigation buttons
     const accountButton = document.querySelector("#accountButton");
     const homeButton = document.querySelector("#homeButton");
     const contestButton = document.querySelector("#contestButton");
@@ -88,9 +92,11 @@ const setup = function(csrf){
         return false;
     });
 
+    //query server to update contest list
     loadCompetitionsFromServer();
 };
 
+//get csrf token then set  up page
 const getToken = () => {
     sendAjax('GET', '/getToken', null, (result) => {
         csrf = result.csrfToken;
@@ -98,6 +104,7 @@ const getToken = () => {
     });
 };
 
+//call getToken when the page has loaded
 $(document).ready(function(){
     getToken();
 });

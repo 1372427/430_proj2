@@ -61,6 +61,7 @@ const validatePassword = (doc, password, callback) => {
   });
 };
 
+// search for account by username
 AccountSchema.statics.findByUsername = (name, callback) => {
   const search = {
     username: name,
@@ -69,6 +70,7 @@ AccountSchema.statics.findByUsername = (name, callback) => {
   return AccountModel.findOne(search, callback);
 };
 
+// search for account by id
 AccountSchema.statics.findById = (id, callback) => {
   const search = {
     _id: convertId(id),

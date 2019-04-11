@@ -14,6 +14,7 @@ const csrf = require('csurf');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
+// MongoDB
 const dbURL = process.env.MONGODB_URI || 'mongodb://localhost/DomoMaker';
 
 mongoose.connect(dbURL, (err) => {
@@ -23,6 +24,7 @@ mongoose.connect(dbURL, (err) => {
   }
 });
 
+// Redis
 let redisURL = {
   hostname: 'localhost',
   port: 6379,

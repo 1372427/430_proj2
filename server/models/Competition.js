@@ -63,6 +63,7 @@ CompetitionSchema.statics.toAPI = (doc) => ({
   contest: doc.contest,
 });
 
+// search for competition by ownerID
 CompetitionSchema.statics.findByOwner = (ownerId, callback) => {
   const search = {
     owner: convertId(ownerId),
@@ -72,6 +73,7 @@ CompetitionSchema.statics.findByOwner = (ownerId, callback) => {
     'name owner description reward deadline createdDate entries winner mascot').exec(callback);
 };
 
+// search for competition by competition ID
 CompetitionSchema.statics.findById = (id, callback) => {
   const search = {
     _id: convertId(id),
@@ -81,6 +83,7 @@ CompetitionSchema.statics.findById = (id, callback) => {
     'name owner description reward deadline createdDate entries winner mascot').exec(callback);
 };
 
+// search for competition by deadline greater than or equal to the given date
 CompetitionSchema.statics.findByDeadline = (date, callback) => {
   const search = {
     deadline: {

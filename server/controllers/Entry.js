@@ -5,6 +5,7 @@ const Entry = models.Entry;
 const Contest = models.Competition;
 const Account = models.Account;
 
+// not used since moved to react
 const makeEntryPage = (req, res) => {
   if (req.query.accountInfo) {
     Account.AccountModel.findByUsername(req.session.account.username, (err, docs) => {
@@ -34,11 +35,14 @@ const makeEntryPage = (req, res) => {
   }
 };
 
+// handle making a new entry
 const makeEntry = (req, res) => {
+  // check all fields filled
   if (!req.body.content || !req.body.name) {
-    return res.status(400).json({ error: 'Meow! Fill out entry Pwease~' });
+    return res.status(400).json({ error: 'Fill out entry please' });
   }
 
+  // set up information
   const entryData = {
     content: req.body.content,
     contest: req.body.contest,
@@ -46,22 +50,27 @@ const makeEntry = (req, res) => {
     owner: req.session.account._id,
     mascot: mascots.mascots[req.session.account.mascot],
   };
+  // find contest to assign entry to
   return Contest.ContestModel.findById(req.body.contest, (err, docs) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occurred' });
     }
-    console.log(docs);
     if (docs.length < 1) return res.status(400).json({ error: 'Contest does not exist' });
 
+    // contest exists! create new entry
     const newEntry = new Entry.EntryModel(entryData);
 
+    // save entry
     const entryPromise = newEntry.save();
 
+    // if save is successful, update contest
     entryPromise.then(() => {
+      // update contest's number of entries
       const upgradePromise = Contest.ContestModel.updateOne(
         { _id: req.body.contest }, { entries: docs[0].entries + 1 });
 
+        // redirect to home page
       upgradePromise.then(() => res.json({ redirect: '/home' }));
       upgradePromise.catch((err2) => {
         console.log(err2);
@@ -82,6 +91,7 @@ const makeEntry = (req, res) => {
   });
 };
 
+// get all entries by account
 const getEntriesByOwner = (request, response) => {
   const req = request;
   const res = response;
@@ -96,6 +106,7 @@ const getEntriesByOwner = (request, response) => {
   });
 };
 
+// get all entries by contest
 const getEntriesByContest = (request, response) => {
   const req = request;
   const res = response;
