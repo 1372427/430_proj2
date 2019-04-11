@@ -2,10 +2,33 @@
 
 var handleAccountChange = function handleAccountChange(e, formId) {
     e.preventDefault();
+    if (formId === "emailForm") {
 
+        var emailCheck1 = $("#email").val().split('@');
+
+        if (emailCheck1.length !== 2 || emailCheck1[0].length < 1 || emailCheck1[1].length < 1) {
+            handleError("Invalid email");
+            return false;
+        }
+        var emailCheck2 = emailCheck1[1].split('.');
+        if (emailCheck2.length < 2 || emailCheck2[0].length < 1 || emailCheck2[1].length < 1) {
+
+            handleError("Invalid email");
+            return false;
+        }
+    } else if (formId == "passForm" && $("#pass").val() === "") return handleError("Please put a new password!");
     sendAjax('POST', $("#" + formId).attr("action"), $("#" + formId).serialize(), function () {
         loadAccountFromServer();
     });
+    return false;
+};
+
+var handleMakeMascotChange = function handleMakeMascotChange(e) {
+    e.preventDefault();
+    sendAjax('GET', '/mascots', null, function (data) {
+        ReactDOM.render(React.createElement(MascotList, { mascots: data.mascots, csrf: csrf }), document.querySelector("#app"));
+    });
+
     return false;
 };
 
@@ -16,13 +39,12 @@ var AccountInfo = function AccountInfo(props) {
     document.querySelector('#homeButton').classList.remove('active');
     document.querySelector('#contestButton').classList.remove('active');
 
-    console.log(props);
     var accountInfo = props.account;
     var ad = void 0;
     if (accountInfo.type === "Basic") {
         ad = React.createElement(
             "div",
-            null,
+            { id: "upgrade" },
             React.createElement(
                 "p",
                 null,
@@ -36,11 +58,10 @@ var AccountInfo = function AccountInfo(props) {
                     },
                     name: "upgradeForm",
                     action: "/upgrade",
-                    method: "POST",
-                    className: "domoForm"
+                    method: "POST"
                 },
                 React.createElement("input", { type: "hidden", name: "_csrf", value: csrf }),
-                React.createElement("input", { className: "makeDomoSubmit", type: "submit", value: "Upgrade Account" })
+                React.createElement("input", { className: "upgradeSubmit", type: "submit", value: "Upgrade Account" })
             )
         );
     }
@@ -55,6 +76,23 @@ var AccountInfo = function AccountInfo(props) {
                 null,
                 "Username: ",
                 accountInfo.username
+            ),
+            React.createElement(
+                "h3",
+                null,
+                "Mascot: ",
+                accountInfo.mascot,
+                React.createElement(
+                    "form",
+                    { id: "mascotForm",
+                        onSubmit: function onSubmit(e) {
+                            return handleMakeMascotChange(e);
+                        },
+                        name: "mascotForm"
+                    },
+                    React.createElement("input", { type: "hidden", name: "_csrf", value: csrf }),
+                    React.createElement("input", { className: "makeDomoSubmit", type: "submit", value: "Change Mascot" })
+                )
             ),
             React.createElement(
                 "h3",
@@ -84,7 +122,7 @@ var AccountInfo = function AccountInfo(props) {
                     { htmlFor: "pass" },
                     "Password: "
                 ),
-                React.createElement("input", { id: "pass", type: "password", name: "pass", placeholder: "new password" }),
+                React.createElement("input", { className: "formInput2", id: "pass", type: "password", name: "pass", placeholder: "new password" }),
                 React.createElement("input", { type: "hidden", name: "_csrf", value: csrf }),
                 React.createElement("input", { className: "makeDomoSubmit", type: "submit", value: "Change Password" })
             ),
@@ -104,9 +142,9 @@ var AccountInfo = function AccountInfo(props) {
                     { htmlFor: "email" },
                     "Email: "
                 ),
-                React.createElement("input", { id: "email", type: "text", name: "email", placeholder: "new email" }),
+                React.createElement("input", { className: "formInput2", id: "email", type: "text", name: "email", placeholder: "new email" }),
                 React.createElement("input", { type: "hidden", name: "_csrf", value: csrf }),
-                React.createElement("input", { className: "makeDomoSubmit", type: "submit", value: "ChangeEmail" })
+                React.createElement("input", { className: "makeDomoSubmit", type: "submit", value: "Change Email" })
             )
         ),
         ad
@@ -150,10 +188,36 @@ var handlePickWinner = function handlePickWinner(id) {
 
 var handleWinnerClick = function handleWinnerClick(entryId, contestId) {
     sendAjax('POST', '/setWinner', "entry=" + entryId + "&contest=" + contestId + "&_csrf=" + csrf, function (data) {
+        var username = data.winner.username;
+        var email = data.winner.email;
         ReactDOM.render(React.createElement(
             "div",
-            null,
-            "Thank you for picking a winner. An email has been sent to your winner."
+            { className: "domoList" },
+            React.createElement(
+                "h3",
+                { className: "emptyDomo" },
+                "Thank you for picking a winner."
+            ),
+            React.createElement(
+                "h3",
+                { className: "emptyDomo" },
+                "You selected ",
+                username,
+                " as your winner."
+            ),
+            React.createElement(
+                "h3",
+                { className: "emptyDomo" },
+                "An email has been sent to ",
+                username,
+                "."
+            ),
+            React.createElement(
+                "h3",
+                { className: "emptyDomo" },
+                "Contact them further at ",
+                email
+            )
         ), document.querySelector("#app"));
     });
 };
@@ -169,8 +233,17 @@ var CompetitionWindow = function CompetitionWindow(props) {
     if (props.type === "Basic") {
         return React.createElement(
             "div",
-            null,
-            "You currently have a Basic account. Please upgrade to Premium to create contests."
+            { className: "domoList" },
+            React.createElement(
+                "h3",
+                { className: "emptyDomo" },
+                "You currently have a Basic account."
+            ),
+            React.createElement(
+                "h3",
+                { className: "emptyDomo" },
+                " Please upgrade to Premium to create contests."
+            )
         );
     }
 
@@ -178,9 +251,9 @@ var CompetitionWindow = function CompetitionWindow(props) {
         return React.createElement(
             "div",
             { id: contest._id, key: contest._id, className: "domo", onClick: function onClick(e) {
-                    return contest.winner ? null : handlePickWinner(contest._id);
+                    return contest.winner ? handleError("Already Won!") : handlePickWinner(contest._id);
                 } },
-            React.createElement("img", { src: "/assets/img/face.png", alt: "cat", className: "domoFace" }),
+            React.createElement("img", { src: "/assets/img/mascots/" + contest.mascot, alt: "cat", className: "domoFace" }),
             React.createElement(
                 "div",
                 { className: "domoContent" },
@@ -227,14 +300,14 @@ var CompetitionWindow = function CompetitionWindow(props) {
     return React.createElement(
         "div",
         { className: "domoList" },
+        contestNodes,
         React.createElement(
             "button",
             { className: "formSubmit", onClick: function onClick() {
                     return ReactDOM.render(React.createElement(MakeCompetitionWindow, { csrf: csrf }), document.querySelector('#app'));
                 } },
             "New Contest"
-        ),
-        contestNodes
+        )
     );
 };
 
@@ -265,25 +338,25 @@ var MakeCompetitionWindow = function MakeCompetitionWindow(props) {
             { htmlFor: "name" },
             "Contest Name: "
         ),
-        React.createElement("input", { id: "name", type: "text", name: "name", placeholder: "name" }),
+        React.createElement("input", { className: "formInput", id: "name", type: "text", name: "name", placeholder: "name" }),
         React.createElement(
             "label",
             { htmlFor: "descrip" },
             "Description: "
         ),
-        React.createElement("input", { id: "descrip", type: "text", name: "descrip", placeholder: "description" }),
+        React.createElement("input", { className: "formInput", id: "descrip", type: "text", name: "descrip", placeholder: "description" }),
         React.createElement(
             "label",
             { htmlFor: "reward" },
             "Reward: $"
         ),
-        React.createElement("input", { id: "reward", type: "text", name: "reward", placeholder: "10.00" }),
+        React.createElement("input", { className: "formInput", id: "reward", type: "text", name: "reward", placeholder: "10.00" }),
         React.createElement(
             "label",
             { htmlFor: "deadline" },
             "Deadline: "
         ),
-        React.createElement("input", { id: "deadline", type: "text", name: "deadline", placeholder: year + "/" + month + "/" + date }),
+        React.createElement("input", { className: "formInput", id: "deadline", type: "text", name: "deadline", placeholder: year + "/" + month + "/" + date }),
         React.createElement("input", { type: "hidden", name: "_csrf", value: csrf }),
         React.createElement("input", { className: "formSubmit", type: "submit", value: "Submit" })
     );
@@ -342,13 +415,13 @@ var EntryWindow = function EntryWindow(props) {
             { htmlFor: "name" },
             "Name: "
         ),
-        React.createElement("input", { id: "name", type: "text", name: "name", placeholder: "name" }),
+        React.createElement("input", { className: "formInput", id: "name", type: "text", name: "name", placeholder: "name" }),
         React.createElement(
             "label",
             { htmlFor: "content" },
             "Content: "
         ),
-        React.createElement("input", { id: "content", type: "text", name: "content", placeholder: "entry" }),
+        React.createElement("input", { className: "formInput", id: "content", type: "text", name: "content", placeholder: "entry" }),
         React.createElement("input", { type: "hidden", name: "_csrf", value: csrf }),
         React.createElement("input", { type: "hidden", name: "contest", value: contest }),
         React.createElement("input", { className: "formSubmit", type: "submit", value: "Submit" })
@@ -383,7 +456,7 @@ var EntryList = function EntryList(props) {
             { id: entry._id, key: entry._id, className: "domo", onClick: function onClick(e) {
                     return handleWinnerClick(entry._id, contestId);
                 } },
-            React.createElement("img", { src: "/assets/img/face.png", alt: "cat", className: "domoFace" }),
+            React.createElement("img", { src: "/assets/img/mascots/" + entry.mascot, alt: "cat", className: "domoFace" }),
             React.createElement(
                 "div",
                 { className: "domoContent" },
@@ -448,7 +521,7 @@ var ContestList = function ContestList(props) {
             { id: contest._id, key: contest._id, className: 'domo', onClick: function onClick(e) {
                     return handleEnterContest(contest._id);
                 } },
-            React.createElement('img', { src: '/assets/img/face.png', alt: 'cat', className: 'domoFace' }),
+            React.createElement('img', { src: '/assets/img/mascots/' + contest.mascot, alt: 'cat', className: 'domoFace' }),
             React.createElement(
                 'div',
                 { className: 'domoContent' },
@@ -536,6 +609,44 @@ var getToken = function getToken() {
 $(document).ready(function () {
     getToken();
 });
+"use strict";
+
+var MascotList = function MascotList(props) {
+    $("#domoMessage").animate({ width: 'hide' }, 350);
+
+    var mascotNodes = Object.keys(props.mascots).map(function (mascot) {
+        console.log(mascot);
+        return React.createElement(
+            "div",
+            { id: mascot, className: "domo", onClick: function onClick(e) {
+                    return handleMascotClick(e, mascot);
+                } },
+            React.createElement("img", { src: "/assets/img/mascots/" + props.mascots[mascot], alt: "mascot", className: "domoFace" }),
+            React.createElement(
+                "div",
+                { className: "domoContent" },
+                React.createElement(
+                    "h3",
+                    null,
+                    "Name: ",
+                    mascot
+                )
+            )
+        );
+    });
+
+    return React.createElement(
+        "div",
+        { className: "domoList" },
+        mascotNodes
+    );
+};
+
+var handleMascotClick = function handleMascotClick(e, mascot) {
+    sendAjax('POST', '/mascots', "mascot=" + mascot + "&_csrf=" + csrf, function () {
+        location.reload();
+    });
+};
 "use strict";
 
 var handleError = function handleError(message) {

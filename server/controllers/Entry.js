@@ -1,4 +1,5 @@
 const models = require('../models');
+const mascots = require('./Mascot.js');
 
 const Entry = models.Entry;
 const Contest = models.Competition;
@@ -17,7 +18,8 @@ const makeEntryPage = (req, res) => {
         type: docs.type,
       };
       return res.render('app', { csrfToken: req.csrfToken(), script:
-        'assets/makerBundle.js', account: accountInfo });
+        'assets/makerBundle.js', account: accountInfo, mascot:
+        `assets/img/mascots/${mascots.mascots[req.session.account.mascot]}` });
     });
   } else {
     Contest.ContestModel.findByDeadline(Date.now(), (err, docs) => {
@@ -26,7 +28,8 @@ const makeEntryPage = (req, res) => {
         return res.status(400).json({ error: 'An error occured' });
       }
       return res.render('app', { csrfToken: req.csrfToken(), script:
-        'assets/homeBundle.js', entries: docs });
+        'assets/homeBundle.js', entries: docs, mascot:
+        `assets/img/mascots/${mascots.mascots[req.session.account.mascot]}` });
     });
   }
 };
@@ -41,6 +44,7 @@ const makeEntry = (req, res) => {
     contest: req.body.contest,
     name: req.body.name,
     owner: req.session.account._id,
+    mascot: mascots.mascots[req.session.account.mascot],
   };
   return Contest.ContestModel.findById(req.body.contest, (err, docs) => {
     if (err) {

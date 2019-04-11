@@ -35,6 +35,10 @@ const EntrySchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  mascot: {
+    type: String,
+    default: '1.png',
+  },
 });
 
 EntrySchema.statics.toAPI = (doc) => ({
@@ -47,7 +51,8 @@ EntrySchema.statics.findByOwner = (ownerId, callback) => {
     owner: convertId(ownerId),
   };
 
-  return EntryModel.find(search).select('owner content contest createdDate name').exec(callback);
+  return EntryModel.find(search).select(
+    'owner content contest createdDate name mascot').exec(callback);
 };
 
 EntrySchema.statics.findById = (id, callback) => {
@@ -55,7 +60,8 @@ EntrySchema.statics.findById = (id, callback) => {
     _id: convertId(id),
   };
 
-  return EntryModel.find(search).select('owner content contest createdDate name').exec(callback);
+  return EntryModel.find(search).select(
+    'owner content contest createdDate name mascot').exec(callback);
 };
 
 EntrySchema.statics.findByContest = (contestId, callback) => {
@@ -63,7 +69,8 @@ EntrySchema.statics.findByContest = (contestId, callback) => {
     contest: convertId(contestId),
   };
 
-  return EntryModel.find(search).select('owner content contest createdDate name').exec(callback);
+  return EntryModel.find(search).select(
+    'owner content contest createdDate name mascot').exec(callback);
 };
 
 EntryModel = mongoose.model('Entry', EntrySchema);

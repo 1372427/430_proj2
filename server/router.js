@@ -13,6 +13,8 @@ const router = (app) => {
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
   app.get('/home', mid.requiresLogin, controllers.Entry.makePage);
   app.get('/accountInfo', mid.requiresLogin, controllers.Account.accountPage);
+  app.get('/mascots', mid.requiresLogin, controllers.Mascot.getMascots);
+  app.post('/mascots', mid.requiresLogin, controllers.Mascot.setMascot);
   app.get('/makeContest', mid.requiresLogin, controllers.Competition.makePage);
   app.post('/makeEntry', mid.requiresLogin, controllers.Entry.make);
   app.get('/entries', mid.requiresLogin, controllers.Entry.getEntriesByContest);

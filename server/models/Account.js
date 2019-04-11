@@ -37,12 +37,17 @@ const AccountSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  mascot: {
+    type: String,
+    default: 'Pisa',
+  },
 });
 
 AccountSchema.statics.toAPI = doc => ({
   // _id is built into your mongo document and is guaranteed to be unique
   username: doc.username,
   _id: doc._id,
+  mascot: doc.mascot,
 });
 
 const validatePassword = (doc, password, callback) => {

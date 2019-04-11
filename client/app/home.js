@@ -27,7 +27,7 @@ const ContestList = function(props){
     const contestNodes = props.contests.map(function(contest){
         return(
             <div id={contest._id} key={contest._id} className="domo" onClick={(e) =>handleEnterContest(contest._id)}>
-                <img src="/assets/img/face.png" alt="cat" className="domoFace"/>
+                <img src={`/assets/img/mascots/${contest.mascot}`} alt="cat" className="domoFace"/>
                 
                 <div className="domoContent">
                 <h3 >Name: {contest.name}</h3>

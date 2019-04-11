@@ -1,3 +1,15 @@
+What your site does and what its purpose.
+How can this app be profitable? What profit model (ads, service, microtransactions, etc) are you considering?
+How you used a templating language and which templating language you used
+How you used MVC
+What you used Mongo for (what did you store/retrieve)
+How you used a templating language and which templating language you used
+How did you go above and beyond
+If in a group, what did each member of the group do? What were they responsible for? How did they contribute to both the server and client in significant ways? Please discuss what each member did in the client and in the server. 
+All members need to submit separate documentation. Documentation will be private to me.
+
+
+
 https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiXs56ejLThAhXETd8KHYbiBmsQjRx6BAgBEAU&url=https%3A%2F%2Fwww.teepublic.com%2Fkids-long-sleeve-t-shirt%2F3821775-a-chibi-cat-cute&psig=AOvVaw1AZnOIaC78TtepbnEEuthw&ust=1554386796845761 
 cat img 
 

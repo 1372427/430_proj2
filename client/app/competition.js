@@ -31,8 +31,15 @@ const handlePickWinner = (id) => {
 
 const handleWinnerClick = (entryId, contestId) => {
     sendAjax('POST', '/setWinner', `entry=${entryId}&contest=${contestId}&_csrf=${csrf}`, (data) => {
+        let username = data.winner.username;
+        let email = data.winner.email;
         ReactDOM.render(
-            <div>Thank you for picking a winner. An email has been sent to your winner.</div>, document.querySelector("#app")
+            <div className="domoList">
+                <h3 className="emptyDomo">Thank you for picking a winner.</h3>
+                <h3 className="emptyDomo">You selected {username} as your winner.</h3>
+                <h3 className="emptyDomo">An email has been sent to {username}.</h3>
+                <h3 className="emptyDomo">Contact them further at {email}</h3>
+            </div>, document.querySelector("#app")
         );
     });
 }
@@ -47,16 +54,17 @@ const CompetitionWindow = (props) => {
 
     if(props.type==="Basic"){
         return (
-            <div>
-                You currently have a Basic account. Please upgrade to Premium to create contests.
+            <div className="domoList">
+                <h3 className="emptyDomo">You currently have a Basic account.</h3>
+                <h3 className="emptyDomo"> Please upgrade to Premium to create contests.</h3>
             </div>
         )
     }
 
     const contestNodes = props.contests.map(function(contest){
         return(
-            <div id={contest._id} key={contest._id} className="domo" onClick={(e) =>contest.winner?null:handlePickWinner(contest._id)}>
-                <img src="/assets/img/face.png" alt="cat" className="domoFace"/>
+            <div id={contest._id} key={contest._id} className="domo" onClick={(e) =>contest.winner?handleError("Already Won!"):handlePickWinner(contest._id)}>
+                <img src={`/assets/img/mascots/${contest.mascot}`} alt="cat" className="domoFace"/>
                 
                 <div className="domoContent">
                 <h3 >Name: {contest.name}</h3>
@@ -73,8 +81,9 @@ const CompetitionWindow = (props) => {
     return (
         <div className="domoList">
         
-        <button className="formSubmit" onClick={() => ReactDOM.render(<MakeCompetitionWindow csrf={csrf}/>, document.querySelector('#app'))}>New Contest</button>
             {contestNodes}
+            
+        <button className="formSubmit" onClick={() => ReactDOM.render(<MakeCompetitionWindow csrf={csrf}/>, document.querySelector('#app'))}>New Contest</button>
         </div>
     );
 };
@@ -101,13 +110,13 @@ const MakeCompetitionWindow = (props) => {
             className="mainForm"
         >
         <label htmlFor="name">Contest Name: </label>
-        <input id="name" type="text" name="name" placeholder="name"/>
+        <input  className="formInput" id="name" type="text" name="name" placeholder="name"/>
         <label htmlFor="descrip">Description: </label>
-        <input id="descrip" type="text" name="descrip" placeholder="description"/>
+        <input  className="formInput" id="descrip" type="text" name="descrip" placeholder="description"/>
         <label htmlFor="reward">Reward: $</label>
-        <input id="reward" type="text" name="reward" placeholder="10.00"/>
+        <input  className="formInput" id="reward" type="text" name="reward" placeholder="10.00"/>
         <label htmlFor="deadline">Deadline: </label>
-        <input id="deadline" type="text" name="deadline" placeholder={`${year}/${month}/${date}`}/>
+        <input  className="formInput" id="deadline" type="text" name="deadline" placeholder={`${year}/${month}/${date}`}/>
         <input type="hidden" name="_csrf" value={csrf}/>
         <input className="formSubmit" type="submit" value="Submit" />
         </form>

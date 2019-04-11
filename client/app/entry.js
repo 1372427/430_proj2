@@ -32,9 +32,9 @@ const EntryWindow = (props) => {
             className="mainForm"
         >
             <label htmlFor="name">Name: </label>
-            <input id="name" type="text" name="name" placeholder="name"/>
+            <input  className="formInput" id="name" type="text" name="name" placeholder="name"/>
             <label htmlFor="content">Content: </label>
-            <input id="content" type="text" name="content" placeholder="entry"/>
+            <input  className="formInput" id="content" type="text" name="content" placeholder="entry"/>
             <input type="hidden" name="_csrf" value={csrf}/>
             <input type="hidden" name="contest" value={contest}/>
             <input className="formSubmit" type="submit" value="Submit"/>
@@ -63,7 +63,7 @@ console.log(props)
     const contestNodes = props.entries.map(function(entry){
         return(
             <div id={entry._id} key={entry._id} className="domo" onClick={ (e) => handleWinnerClick(entry._id, contestId)}>
-                <img src="/assets/img/face.png" alt="cat" className="domoFace"/>
+                <img src={`/assets/img/mascots/${entry.mascot}`} alt="cat" className="domoFace"/>
                 <div className="domoContent">
                 <h3 >Name: {entry.name}</h3> 
                 <h3 >Content: {entry.content}</h3>

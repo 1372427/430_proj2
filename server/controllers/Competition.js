@@ -1,4 +1,5 @@
 const models = require('../models');
+const mascots = require('./Mascot.js');
 const nodemailer = require('nodemailer');
 
 const Contest = models.Competition;
@@ -20,7 +21,8 @@ const makeContestPage = (req, res) => {
       return res.status(400).json({ error: 'An error occured' });
     }
     return res.render('app', { csrfToken: req.csrfToken(), script:
-      '/assets/makerBundle.js', entries: docs });
+      '/assets/makerBundle.js', entries: docs, mascot:
+      `assets/img/mascots/${mascots.mascots[req.session.account.mascot]}` });
   });
 };
 
@@ -36,6 +38,7 @@ const makeContest = (req, res) => {
     description: req.body.descrip,
     reward: req.body.reward,
     deadline: req.body.deadline,
+    mascot: mascots.mascots[req.session.account.mascot],
   };
   console.log(contestData);
   const newContest = new Contest.ContestModel(contestData);
@@ -128,6 +131,8 @@ const setWin = (request, response) => {
 
         return transporter.sendMail(mailOptions, (error5) => {
           if (error5) console.log(error5);
+          return res.status(200).json({ winner:
+            { username: winner.username, email: winner.email } });
         });
       });
     }));
