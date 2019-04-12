@@ -10,13 +10,14 @@ features except creating their own contests. This means they can enter contests 
 to Premium by paying $5. This then allows them to also create contests. 
 
 ## Templating Language 
-How you used a templating language and which templating language you used  
-I used handlebars as the templating language
+I used handlebars as the templating language. I also used React for some more dynamic interfacing. 
 
 ## MVC
-How you used MVC  
-React  
-Handlebars
+### Handlebars
+I used handlebars for the error message image. 
+
+### React
+I used react to create all of the different contests, entries, and account information. 
 
 ## Mongo
 I used MongoDB to store account, contest, and entry information. 
